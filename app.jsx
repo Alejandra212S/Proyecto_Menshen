@@ -2,10 +2,10 @@
 const { useState } = React;
 
 const Icon = ({ symbol, className = '' }) => <span className={className} aria-hidden="true">{symbol}</span>;
-const Home = (props) => <Icon {...props} symbol="⌾" />;
-const Monitor = (props) => <Icon {...props} symbol="▣" />;
-const Mouse = (props) => <Icon {...props} symbol="◉" />;
-const AlertTriangle = (props) => <Icon {...props} symbol="@" />;
+const Home = (props) => <Icon {...props} symbol="" />;
+const Monitor = (props) => <Icon {...props} symbol="" />;
+const Mouse = (props) => <Icon {...props} symbol="" />;
+const AlertTriangle = (props) => <Icon {...props} symbol="" />;
 const Grid = (props) => <Icon {...props} symbol="▦" />;
 const RotateCcw = (props) => <Icon {...props} symbol="↻" />;
 const CheckCircle = (props) => <Icon {...props} symbol="✓" />;
@@ -14,34 +14,51 @@ const Mail = (props) => <Icon {...props} symbol="✉" />;
 const inventoryData = {
   inicio: {
     title: "Inicio",
+      desc: "Bienvendo al sistema de inventario del area de TI. Aqui puedes ver los estados de los equipos, ubicación y reportes de mantenimiento.",
     icon: <Home className="w-4 h-4" />,
     content: [
-      { id: "SYS-01", name: "Panel General de Métricas", desc: "Total de equipos: 24 | Activos: 18 | En revisión: 6" },
-      { id: "SYS-02", name: "Alertas Recientes", desc: "Reporte de mantenimiento pendiente para Impresora Epson" }
+      { name: "Panel General de Equipos", desc: "Total de equipos: 24 | Activos: 18 | Con defectos: 6" },
+
+       { name: "Equipos por departamento", desc: "Total de equipos: 56 | En uso: 18" },
+
+        { name: "Tipo de Equipos", desc: "Total de equipos: 24 | Activos: 18 | Con defectos: 6" },
+
+      {name: "Alertas Recientes", desc: "Reporte de mantenimiento pendiente para Impresora Epson" }
     ]
   },
   computadoras: {
-    title: "Computadoras",
-    icon: <Monitor className="w-4 h-4" />,
+    title: "Equipo de computo",
+    desc: "PCs, laptops, Tablets y monitores.",
+
     content: [
-      { id: "PC-OFI-01", name: "Dell OptiPlex 7090", desc: "Core i7, 16GB RAM | Estado: Operativo | Área: Administración" },
-      { id: "LAP-DEV-02", name: "Lenovo ThinkPad X1", desc: "Core i7, 32GB RAM | Estado: Operativo | Área: Desarrollo" }
+      {name: "PC",desc: "Core i7, 16GB RAM | Estado: Operativo | Área: Administración" },
+
+      {name:"Tablets", desc: "Core i7, 32GB RAM | Estado: Operativo | Área: Desarrollo" },
+
+      {  name:"Monitores", desc: "Core i7, 32GB RAM | Estado: Operativo | Área: Desarrollo" }
+
     ]
   },
-  mouse: {
-    title: "Mouse",
+  licencias: {
+    title: "Software y Licencias",
+    desc: "Gestión de licencias de Software.",
     icon: <Mouse className="w-4 h-4" />,
     content: [
-      { id: "MOU-LOG-01", name: "Logitech MX Master 3S", desc: "Inalámbrico | Asignado a: Juan Pérez" },
-      { id: "MOU-HP-02", name: "HP USB Optical Mouse", desc: "Cableado | Ubicación: Bodega TI" }
+      
+      { name: "Total Licencias", desc: "Tipo de licencia: | Asignado a: Juan Pérez" },
+      { name: "En uso", desc: "100" },
+      { name: "Disponibles", desc: "50" },
+      { name: "Licencias próximas a vencer", desc: "Licencias adquiridas" }
     ]
   },
   noFuncionales: {
-    title: "Equipos no funcionales",
+    title: "Equipos Defectuosos ",
+    desc: "Para agregar un equipo con defectos debes de tomar una foto del equipo y subirla al sistema",
+
     icon: <AlertTriangle className="w-4 h-4" />,
     content: [
-      { id: "MON-VIE-01", name: "Monitor Dell UltraSharp 24\"", desc: "Falla: Panel quemado | Estatus: Diagnosticado para baja" },
-      { id: "IMPR-EPS-01", name: "Impresora Epson EcoTank L3150", desc: "Falla: Cabezal obstruido | Estatus: Pendiente de repuesto" }
+      { name: "Monitor Dell UltraSharp 24\"", desc: "Falla: Panel quemado | Estatus: Diagnosticado para baja" },
+      { name: "Impresora Epson EcoTank L3150", desc: "Falla: Cabezal obstruido | Estatus: Pendiente de repuesto" }
     ]
   },
   porArea: {
@@ -90,7 +107,11 @@ function InventorySystem() {
               {inventoryData[activeTab].icon}
               {inventoryData[activeTab].title}
             </h1>
-            <p className="text-sm text-gray-500">Registros asociados a este apartado</p>
+            {inventoryData[activeTab].desc && (
+              <p className="mt-3 text-sm text-gray-700">{inventoryData[activeTab].desc}</p>
+            )}
+            <p className="text-sm text-gray-700 mt-2">
+            </p>
           </header>
           <div className="grid gap-4 md:grid-cols-2">
             {inventoryData[activeTab].content.map((item) => (
