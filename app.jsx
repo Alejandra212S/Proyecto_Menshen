@@ -15,7 +15,6 @@ const inventoryData = {
   inicio: {
     title: "Inicio",
       desc: "Bienvendo al sistema de inventario del area de TI. Aqui puedes ver los estados de los equipos, ubicación y reportes de mantenimiento.",
-    icon: <Home className="w-4 h-4" />,
     content: [
       { name: "Panel General de Equipos", desc: "Total de equipos: 24 | Activos: 18 | Con defectos: 6" },
 
@@ -42,7 +41,6 @@ const inventoryData = {
   licencias: {
     title: "Software y Licencias",
     desc: "Gestión de licencias de Software.",
-    icon: <Mouse className="w-4 h-4" />,
     content: [
       
       { name: "Total Licencias", desc: "Tipo de licencia: | Asignado a: Juan Pérez" },
@@ -54,8 +52,6 @@ const inventoryData = {
   noFuncionales: {
     title: "Equipos Defectuosos ",
     desc: "Para agregar un equipo con defectos debes de tomar una foto del equipo y subirla al sistema",
-
-    icon: <AlertTriangle className="w-4 h-4" />,
     content: [
       { name: "Monitor Dell UltraSharp 24\"", desc: "Falla: Panel quemado | Estatus: Diagnosticado para baja" },
       { name: "Impresora Epson EcoTank L3150", desc: "Falla: Cabezal obstruido | Estatus: Pendiente de repuesto" }
@@ -63,10 +59,28 @@ const inventoryData = {
   },
   porArea: {
     title: "Equipos por area",
-    icon: <Grid className="w-4 h-4" />,
+    desc:"Descripción de los equipos por área ",
     content: [
-      { id: "AREA-FIN", name: "Área de Finanzas", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
-      { id: "AREA-DIS", name: "Área de Diseño", desc: "2x Apple iMac 27\" M1, 1x Tableta Wacom Intuos" }
+
+      {name: "Departamento de Finanzas", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
+
+      {name: "Departamento de Almacen", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
+
+      {name: "Departamento Comercial", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
+
+      {name: "Departamento de Compras", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
+
+      {name: "Departamento de Mantenimiento", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
+
+      {name: "Departamento de Finanzas", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
+
+      {name: "Departamento Moldes", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
+
+      {name: "Departamento de Producción", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
+
+
+
+      { name: "Departamento de Calidad", desc: "2x Apple iMac 27\" M1, 1x Tableta Wacom Intuos" }
     ]
   },
   recuperados: {

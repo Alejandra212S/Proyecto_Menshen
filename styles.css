@@ -1,16 +1,510 @@
 
-.no-scrollbar::-webkit-scrollbar {
-	display: none;
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --primary-light: #eff6ff;
+  --success: #16a34a;
+  --success-light: #f0fdf4;
+  --warning: #d97706;
+  --warning-light: #fffbeb;
+  --danger: #dc2626;
+  --danger-light: #fef2f2;
+  --text-main: #111827;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --background: #f5f7fb;
+  --surface: #ffffff;
+  --border: #e5e7eb;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 14px 35px rgba(15, 23, 42, 0.12);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --scrollbar-track: #f1f5f9;
+  --scrollbar-thumb: #cbd5e1;
+  --scrollbar-thumb-hover: #94a3b8;
+}
+
+/* bBASE*/
+
+* {
+  box-sizing: border-box;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  scrollbar-width: thin;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family:
+    Inter,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  background: var(--background);
+  color: var(--text-main);
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* SCROLLBAR*/
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 999px;
+  border: 2px solid var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
 }
 
 .no-scrollbar {
-	scrollbar-width: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .no-scrollbar::-webkit-scrollbar {
-	display: none;
+  display: none;
 }
 
-.no-scrollbar {
-	scrollbar-width: none;
+/*  CONTENEDOR PRINCIPAL */
+
+#root > div {
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(37, 99, 235, 0.05),
+      transparent 30%
+    ),
+    var(--background);
+}
+
+/* CONTENIDO PRINCIPAL */
+
+main {
+  padding-top: 32px !important;
+}
+
+main > div {
+  max-width: 1180px !important;
+}
+
+/* HEADER*/
+
+header {
+  position: relative;
+  padding: 4px 0 22px !important;
+  margin-bottom: 28px !important;
+
+  border-bottom: 1px solid var(--border) !important;
+}
+
+header::after {
+  content: "";
+  position: absolute;
+
+  left: 0;
+  bottom: -1px;
+
+  width: 55px;
+  height: 3px;
+
+  background: var(--primary);
+  border-radius: 10px;
+}
+
+header h1 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.025em;
+  color: var(--text-main) !important;
+}
+
+header h1 > span {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 20px;
+}
+
+header p {
+  max-width: 780px;
+  color: var(--text-secondary) !important;
+  font-size: 14px !important;
+  line-height: 1.7;
+}
+
+/*TARJETAS */
+
+main .grid > div {
+  position: relative;
+  padding: 22px !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* Línea superior */
+
+main .grid > div::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: transparent;
+  border-radius: 0 0 5px 5px;
+  transition: background 0.2s ease;
+}
+
+/* Hover */
+
+main .grid > div:hover {
+  transform: translateY(-3px);
+  border-color: #bfdbfe !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+main .grid > div:hover::before {
+  background: var(--primary);
+}
+
+/* =========================================================
+   ID / CÓDIGO DEL EQUIPO
+   ========================================================= */
+
+main .grid > div > div:first-child {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  margin-bottom: 10px !important;
+  border-radius: 6px;
+  background: var(--primary-light);
+  color: var(--primary) !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   TÍTULO DE TARJETA
+   ========================================================= */
+
+main .grid h3 {
+  margin-bottom: 6px !important;
+  font-size: 14px !important;
+  font-weight: 60 !important;
+  line-height: 1.3;
+  color: var(--text-main) !important;
+}
+/* =========================================================
+   DESCRIPCIÓN
+   ========================================================= */
+
+main .grid p {
+  color: var(--text-secondary) !important;
+
+  font-size: 13px !important;
+
+  line-height: 1.65;
+}
+
+/* =========================================================
+   NAVEGACIÓN INFERIOR
+   ========================================================= */
+
+nav {
+  z-index: 50;
+
+  background: rgba(255, 255, 255, 0.94) !important;
+
+  border-top: 1px solid var(--border) !important;
+
+  box-shadow:
+    0 -4px 20px rgba(15, 23, 42, 0.06) !important;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+nav > div {
+  max-width: 1180px !important;
+
+  min-height: 76px;
+}
+
+/* =========================================================
+   BOTONES DE NAVEGACIÓN
+   ========================================================= */
+
+nav button {
+  position: relative;
+
+  min-height: 76px !important;
+
+  padding: 10px 8px !important;
+
+  background: transparent !important;
+
+  border-right: 1px solid #f1f5f9 !important;
+
+  color: var(--text-secondary) !important;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+nav button:hover {
+  background: #f8fafc !important;
+
+  color: var(--primary) !important;
+}
+
+/* Icono */
+
+nav button > div {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 5px !important;
+
+  border-radius: 9px;
+
+  color: var(--text-secondary) !important;
+
+  font-size: 18px;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* Texto */
+
+nav button span {
+  max-width: 110px;
+
+  color: inherit !important;
+
+  font-size: 10px !important;
+
+  font-weight: 550;
+
+  line-height: 1.25;
+
+  white-space: normal;
+}
+
+/* =========================================================
+   BOTÓN ACTIVO
+   ========================================================= */
+
+nav button.bg-gray-100 {
+  background: var(--primary-light) !important;
+
+  color: var(--primary) !important;
+}
+
+nav button.bg-gray-100::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 20%;
+  right: 20%;
+
+  height: 3px;
+
+  background: var(--primary);
+
+  border-radius: 0 0 6px 6px;
+}
+
+nav button.bg-gray-100 > div {
+  background: var(--primary);
+
+  color: white !important;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 4px 10px rgba(37, 99, 235, 0.25);
+}
+
+nav button.bg-gray-100 span {
+  font-weight: 700;
+}
+
+/* =========================================================
+   ESTADOS VISUALES
+   ========================================================= */
+
+/* Equipos recuperados */
+
+main .grid > div:has(h3:contains("recuperado")) {
+  border-left: 3px solid var(--success);
+}
+
+/* =========================================================
+   ANIMACIÓN DE ENTRADA
+   ========================================================= */
+
+main .grid > div {
+  animation: cardAppear 0.35s ease both;
+}
+
+main .grid > div:nth-child(2) {
+  animation-delay: 0.05s;
+}
+
+main .grid > div:nth-child(3) {
+  animation-delay: 0.1s;
+}
+
+main .grid > div:nth-child(4) {
+  animation-delay: 0.15s;
+}
+
+main .grid > div:nth-child(5) {
+  animation-delay: 0.2s;
+}
+
+main .grid > div:nth-child(6) {
+  animation-delay: 0.25s;
+}
+
+@keyframes cardAppear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+  main {
+    padding: 20px 16px 110px !important;
+  }
+
+  header h1 {
+    font-size: 23px !important;
+  }
+
+  header h1 > span {
+    width: 38px;
+    height: 38px;
+  }
+
+  main .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  main .grid > div {
+    padding: 18px !important;
+  }
+
+  nav > div {
+    justify-content: flex-start !important;
+  }
+
+  nav button {
+    flex: 0 0 92px !important;
+    min-width: 92px !important;
+  }
+
+  nav button span {
+    font-size: 9px !important;
+  }
+}
+
+/* =========================================================
+   PANTALLAS GRANDES
+   ========================================================= */
+
+@media (min-width: 1200px) {
+
+  main .grid {
+    gap: 18px !important;
+  }
+
+  main .grid > div {
+    padding: 24px !important;
+  }
+}
+
+/* =========================================================
+   ACCESIBILIDAD
+   ========================================================= */
+
+button:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.25);
+
+  outline-offset: 2px;
+}
+
+/* =========================================================
+   REDUCE MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
