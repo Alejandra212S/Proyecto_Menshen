@@ -1,27 +1,14 @@
 
 const { useState } = React;
 
-const Icon = ({ symbol, className = '' }) => <span className={className} aria-hidden="true">{symbol}</span>;
-const Home = (props) => <Icon {...props} symbol="" />;
-const Monitor = (props) => <Icon {...props} symbol="" />;
-const Mouse = (props) => <Icon {...props} symbol="" />;
-const AlertTriangle = (props) => <Icon {...props} symbol="" />;
-const Grid = (props) => <Icon {...props} symbol="▦" />;
-const RotateCcw = (props) => <Icon {...props} symbol="↻" />;
-const CheckCircle = (props) => <Icon {...props} symbol="✓" />;
-const Mail = (props) => <Icon {...props} symbol="✉" />;
-
 const inventoryData = {
   inicio: {
     title: "Inicio",
       desc: "Bienvendo al sistema de inventario del area de TI. Aqui puedes ver los estados de los equipos, ubicación y reportes de mantenimiento.",
     content: [
       { name: "Panel General de Equipos", desc: "Total de equipos: 24 | Activos: 18 | Con defectos: 6" },
-
        { name: "Equipos por departamento", desc: "Total de equipos: 56 | En uso: 18" },
-
         { name: "Tipo de Equipos", desc: "Total de equipos: 24 | Activos: 18 | Con defectos: 6" },
-
       {name: "Alertas Recientes", desc: "Reporte de mantenimiento pendiente para Impresora Epson" }
     ]
   },
@@ -31,9 +18,7 @@ const inventoryData = {
 
     content: [
       {name: "PC",desc: "Core i7, 16GB RAM | Estado: Operativo | Área: Administración" },
-
       {name:"Tablets", desc: "Core i7, 32GB RAM | Estado: Operativo | Área: Desarrollo" },
-
       {  name:"Monitores", desc: "Core i7, 32GB RAM | Estado: Operativo | Área: Desarrollo" }
 
     ]
@@ -42,7 +27,6 @@ const inventoryData = {
     title: "Software y Licencias",
     desc: "Gestión de licencias de Software.",
     content: [
-      
       { name: "Total Licencias", desc: "Tipo de licencia: | Asignado a: Juan Pérez" },
       { name: "En uso", desc: "100" },
       { name: "Disponibles", desc: "50" },
@@ -52,7 +36,8 @@ const inventoryData = {
   noFuncionales: {
     title: "Equipos Defectuosos ",
     desc: "Para agregar un equipo con defectos debes de tomar una foto del equipo y subirla al sistema",
-    content: [
+    
+    content: [  
       { name: "Monitor Dell UltraSharp 24\"", desc: "Falla: Panel quemado | Estatus: Diagnosticado para baja" },
       { name: "Impresora Epson EcoTank L3150", desc: "Falla: Cabezal obstruido | Estatus: Pendiente de repuesto" }
     ]
@@ -61,35 +46,26 @@ const inventoryData = {
     title: "Equipos por area",
     desc:"Descripción de los equipos por área ",
     content: [
-
       {name: "Departamento de Finanzas", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
-
       {name: "Departamento de Almacen", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
-
       {name: "Departamento Comercial", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
-
       {name: "Departamento de Compras", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
-
       {name: "Departamento de Mantenimiento", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
-
       {name: "Departamento de Finanzas", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
-
       {name: "Departamento Moldes", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
-
       {name: "Departamento de Producción", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
-
-
-
       { name: "Departamento de Calidad", desc: "2x Apple iMac 27\" M1, 1x Tableta Wacom Intuos" }
     ]
   },
   recuperados: {
     title: "Equipos recuperados",
-    icon: <RotateCcw className="w-4 h-4" />,
+    desc: "Descripción de los equipos que ha sido reparados, vendidos o reasignados a otra área",
     content: [
-      { id: "PC-REC-01", name: "HP EliteDesk 800 G4", desc: "Reparación: Cambio de SSD y Fuente | Estado: Listo para reasignar" },
-      { id: "LAP-REC-02", name: "MacBook Pro 13\" 2020", desc: "Reparación: Reemplazo de Batería | Estado: En pruebas" }
+
+      {name: "HP EliteDesk 800 G4", desc: "Reparación: Cambio de SSD y Fuente | Estado: Vendido"},
+      {name: "MacBook Pro 13\" 2020", desc: "Defecto: Pantalla rayada | Estado: En pruebas" }
     ]
+
   },
   buenEstado: {
     title: "Equipo en Buen estado",
