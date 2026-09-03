@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .no-scrollbar::-webkit-scrollbar {
 	display: none;
 }
@@ -5,3 +6,12 @@
 .no-scrollbar {
 	scrollbar-width: none;
 }
+=======
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+
+.no-scrollbar {
+	scrollbar-width: none;
+}
+>>>>>>> e56a69f30fef19a82c6aee3df563fd177504c5d9

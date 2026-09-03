@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const { useState } = React;
 
 const Icon = ({ symbol, className = '' }) => <span className={className} aria-hidden="true">{symbol}</span>;
@@ -124,3 +125,131 @@ function InventorySystem() {
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(<InventorySystem />);
+=======
+const { useState } = React;
+
+const Icon = ({ symbol, className = '' }) => <span className={className} aria-hidden="true">{symbol}</span>;
+const Home = (props) => <Icon {...props} symbol="⌂" />;
+const Monitor = (props) => <Icon {...props} symbol="▣" />;
+const Mouse = (props) => <Icon {...props} symbol="◉" />;
+const AlertTriangle = (props) => <Icon {...props} symbol="@" />;
+const Grid = (props) => <Icon {...props} symbol="▦" />;
+const RotateCcw = (props) => <Icon {...props} symbol="↻" />;
+const CheckCircle = (props) => <Icon {...props} symbol="✓" />;
+const Mail = (props) => <Icon {...props} symbol="✉" />;
+
+const inventoryData = {
+  inicio: {
+    title: "Inicio",
+    icon: <Home className="w-4 h-4" />,
+    content: [
+      { id: "SYS-01", name: "Panel General de Métricas", desc: "Total de equipos: 24 | Activos: 18 | En revisión: 6" },
+      { id: "SYS-02", name: "Alertas Recientes", desc: "Reporte de mantenimiento pendiente para Impresora Epson" }
+    ]
+  },
+  computadoras: {
+    title: "Computadoras",
+    icon: <Monitor className="w-4 h-4" />,
+    content: [
+      { id: "PC-OFI-01", name: "Dell OptiPlex 7090", desc: "Core i7, 16GB RAM | Estado: Operativo | Área: Administración" },
+      { id: "LAP-DEV-02", name: "Lenovo ThinkPad X1", desc: "Core i7, 32GB RAM | Estado: Operativo | Área: Desarrollo" }
+    ]
+  },
+  mouse: {
+    title: "Mouse",
+    icon: <Mouse className="w-4 h-4" />,
+    content: [
+      { id: "MOU-LOG-01", name: "Logitech MX Master 3S", desc: "Inalámbrico | Asignado a: Juan Pérez" },
+      { id: "MOU-HP-02", name: "HP USB Optical Mouse", desc: "Cableado | Ubicación: Bodega TI" }
+    ]
+  },
+  noFuncionales: {
+    title: "Equipos no funcionales",
+    icon: <AlertTriangle className="w-4 h-4" />,
+    content: [
+      { id: "MON-VIE-01", name: "Monitor Dell UltraSharp 24\"", desc: "Falla: Panel quemado | Estatus: Diagnosticado para baja" },
+      { id: "IMPR-EPS-01", name: "Impresora Epson EcoTank L3150", desc: "Falla: Cabezal obstruido | Estatus: Pendiente de repuesto" }
+    ]
+  },
+  porArea: {
+    title: "Equipos por area",
+    icon: <Grid className="w-4 h-4" />,
+    content: [
+      { id: "AREA-FIN", name: "Área de Finanzas", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
+      { id: "AREA-DIS", name: "Área de Diseño", desc: "2x Apple iMac 27\" M1, 1x Tableta Wacom Intuos" }
+    ]
+  },
+  recuperados: {
+    title: "Equipos recuperados",
+    icon: <RotateCcw className="w-4 h-4" />,
+    content: [
+      { id: "PC-REC-01", name: "HP EliteDesk 800 G4", desc: "Reparación: Cambio de SSD y Fuente | Estado: Listo para reasignar" },
+      { id: "LAP-REC-02", name: "MacBook Pro 13\" 2020", desc: "Reparación: Reemplazo de Batería | Estado: En pruebas" }
+    ]
+  },
+  buenEstado: {
+    title: "Equipo en Buen estado",
+    icon: <CheckCircle className="w-4 h-4" />,
+    content: [
+      { id: "SRV-MAIN-01", name: "Servidor HP ProLiant DL380", desc: "100% Funcional | Ubicación: Data Center" },
+      { id: "TAB-PAD-01", name: "iPad Air 5ª Gen", desc: "Excelente estado | Asignado a: Gerencia" }
+    ]
+  },
+  contact: {
+    title: "Contact",
+    icon: <Mail className="w-4 h-4" />,
+    content: [
+      { id: "CNT-01", name: "", desc: "Ext:  | Corrreo:" },
+      { id: "CNT-02", name: "Proveedor Técnico (Dell)", desc: "Tel: +52 800-123-4567 " }
+    ]
+  }
+};
+
+function InventorySystem() {
+  const [activeTab, setActiveTab] = useState('inicio');
+
+  return (
+    <div className="flex flex-col h-screen bg-gray-50 text-gray-800">
+      <main className="flex-1 p-6 overflow-y-auto pb-24">
+        <div className="max-w-4xl mx-auto">
+          <header className="mb-6 border-b pb-4">
+            <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+              {inventoryData[activeTab].icon}
+              {inventoryData[activeTab].title}
+            </h1>
+            <p className="text-sm text-gray-500">Registros asociados a este apartado</p>
+          </header>
+          <div className="grid gap-4 md:grid-cols-2">
+            {inventoryData[activeTab].content.map((item) => (
+              <div key={item.id} className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                <div className="text-xs font-semibold text-blue-600 mb-1">{item.id}</div>
+                <h3 className="font-semibold text-gray-900 mb-1">{item.name}</h3>
+                <p className="text-sm text-gray-600">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-lg">
+        <div className="flex overflow-x-auto no-scrollbar justify-between items-center max-w-7xl mx-auto">
+          {Object.entries(inventoryData).map(([key, section]) => {
+            const isActive = activeTab === key;
+            return (
+              <button
+                key={key}
+                onClick={() => setActiveTab(key)}
+                className={`flex-1 min-w-[100px] py-2 px-1 flex flex-col items-center justify-center border-r border-dashed border-gray-300 last:border-r-0 transition-colors ${isActive ? 'bg-gray-100 text-blue-600 font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}
+              >
+                <div className="mb-1 text-gray-700">{section.icon}</div>
+                <span className="text-[11px] leading-tight text-center">{section.title}</span>
+              </button>
+            );
+          })}
+        </div>
+      </nav>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<InventorySystem />);
+>>>>>>> e56a69f30fef19a82c6aee3df563fd177504c5d9
