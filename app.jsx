@@ -1,20 +1,22 @@
 
 const { useState } = React;
 
+
 const Icon = ({ symbol, className = '' }) => <span className={className} aria-hidden="true">{symbol}</span>;
-const Home = (props) => <Icon {...props} symbol="" />;
-const Monitor = (props) => <Icon {...props} symbol="" />;
-const Mouse = (props) => <Icon {...props} symbol="" />;
-const AlertTriangle = (props) => <Icon {...props} symbol="" />;
-const Grid = (props) => <Icon {...props} symbol="▦" />;
+const Home = (props) => <Icon {...props} symbol="☉" />;
+const Monitor = (props) => <Icon {...props} symbol="➣" />;
+const Mouse = (props) => <Icon {...props} symbol="⋙" />;
+const AlertTriangle = (props) => <Icon {...props} symbol="⋗" />;
+const Grid = (props) => <Icon {...props} symbol="⦾" />;
 const RotateCcw = (props) => <Icon {...props} symbol="↻" />;
 const CheckCircle = (props) => <Icon {...props} symbol="✓" />;
-const Mail = (props) => <Icon {...props} symbol="✉" />;
+const Mail = (props) => <Icon {...props} symbol="く" />;
 
 const inventoryData = {
   inicio: {
     title: "Inicio",
       desc: "Bienvendo al sistema de inventario del area de TI. Aqui puedes ver los estados de los equipos, ubicación y reportes de mantenimiento.",
+      icon: <Home className="w-4-h-412/" />,
     content: [
       { name: "Panel General de Equipos", desc: "Total de equipos: 24 | Activos: 18 | Con defectos: 6" },
        { name: "Equipos por departamento", desc: "Total de equipos: 56 | En uso: 18" },
@@ -25,6 +27,7 @@ const inventoryData = {
   computadoras: {
     title: "Equipo de computo",
     desc: "PCs, laptops, Tablets y monitores.",
+    icon: <Monitor className="w-4-h-412/" />,
 
     content: [
       {name: "PC",desc: "Core i7, 16GB RAM | Estado: Operativo | Área: Administración" },
@@ -36,6 +39,7 @@ const inventoryData = {
   licencias: {
     title: "Software y Licencias",
     desc: "Gestión de licencias de Software.",
+     icon: <AlertTriangle className="w-4-h-412/" />,
     content: [
       { name: "Total Licencias", desc: "Tipo de licencia: | Asignado a: Juan Pérez" },
       { name: "En uso", desc: "100" },
@@ -46,6 +50,7 @@ const inventoryData = {
   noFuncionales: {
     title: "Equipos Defectuosos ",
     desc: "Para agregar un equipo con defectos debes de tomar una foto del equipo y subirla al sistema",
+     icon: <Mouse className="w-4-h-412/" />,
     content: [
       { name: "Monitor Dell UltraSharp 24\"", desc: "Falla: Panel quemado | Estatus: Diagnosticado para baja" },
       { name: "Impresora Epson EcoTank L3150", desc: "Falla: Cabezal obstruido | Estatus: Pendiente de repuesto" }
@@ -54,6 +59,7 @@ const inventoryData = {
   porArea: {
     title: "Equipos por area",
     desc:"Descripción de los equipos por área ",
+     icon: <Grid className="w-4-h-412/" />,
     content: [
       {name: "Departamento de Finanzas", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
       {name: "Departamento de Almacen", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
@@ -69,6 +75,7 @@ const inventoryData = {
   recuperados: {
     title: "Equipos recuperados",
     desc: "Descripción de los equipos que han sido reparados, vendidos o reasignados a otra área",
+    icon: <RotateCcw className="w-4-h-412/" />,
     content: [
       { id: "PC-REC-01", name: "HP EliteDesk 800 G4", desc: "Reparación: Cambio de SSD y Fuente | Estado: Listo para reasignar" },
 
@@ -80,6 +87,7 @@ const inventoryData = {
   Impresoras: {
     title: "Impresoras y Toners",
     desc: "Gestión de impresoras y consumibles.",
+    icon: <RotateCcw className="w-4-h-412/" />,
 
     content: [
       { id: "IMP-01", name: "Impresora HP LaserJet Pro M404n", desc: "Estado: Operativa | Ubicación: Oficina Principal" },
@@ -90,6 +98,7 @@ const inventoryData = {
   Telefonia: {
     title: "Telefonía",
     desc:"Gestión de telefonos y dispositivos de comunicación.",
+    icon: <CheckCircle className="w-4-h-412/" />,
    
     content: [
       { id: "CNT-01", name: "Anaya", desc:"Area: Sistemas | no de extensión | Linea directa: 72222770511 | no de Serie: 001b4f377304 ! no.Interno 412 | Direcciones IP | Extension: 193 ° Dirección MAC" },
@@ -100,13 +109,30 @@ const inventoryData = {
   Poliza: {
     title: "Programas y polizas de soporte",
     desc: "Gestión de programas y polizas de soporte.",
+    icon: <Mail className="w-4-h-412/" />,
 
     content: [
       {
         id: "POL-01",
         name: "Nombre del programa",
         desc: "Tipo: Comprado | Versión: | Proveedor: | Área: Finanzas | Fecha de instalación: | Descripción de la póliza de mantenimiento."
+      },
+
+      { id: "POL-02",
+        name: "Nombre del programa",
+        desc: "Tipo: Comprado | Versión: | Proveedor: | Área: Finanzas | Fecha de instalación: | Descripción de la póliza de mantenimiento."
       }
+    ]
+  },
+  Articulos: {
+    title: "Artículos",
+    desc: "Gestión de articlos que se tiene en cada area desginada",
+    icon: <Mail className="w-4-h-412/" />,
+
+    content: [
+      {id: "AR-001", name: "USB 165 G", desc: "Cantidad asignada :3 |usuarios:Solicito Moldes ignacio perose le entregaron a David Perez | Fecha de entrega: 2024-05-10 | Estado: En uso" },
+
+         {id: "AR-002", name: "Convertidor HDMI A¿ a VGA", desc: "Cantidad asignada :1 |usuariIS: Davi Estrada Da| Fecha de entrega: 2024-05-10 | Estado: En uso" },
     ]
   }
 };
@@ -116,7 +142,10 @@ function InventorySystem() {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50 text-gray-800">
-      <main className="flex-1 p-6 overflow-y-auto pb-24">
+      <header className="bg-blue-600 px-6 py-4 text-white shadow-md">
+        <h1 className="text-2xl font-bold">menshen</h1>
+      </header>
+      <main className="flex-1 p-6 overflow-y-auto pt-28 pb-6">
         <div className="max-w-4xl mx-auto">
           <header className="mb-6 border-b pb-4">
             <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
@@ -140,7 +169,7 @@ function InventorySystem() {
           </div>
         </div>
       </main>
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-lg">
+      <nav className="fixed top-0 left-0 right-0 bg-white border-b border-gray-300 shadow-lg z-50">
         <div className="flex overflow-x-auto no-scrollbar justify-between items-center max-w-7xl mx-auto">
           {Object.entries(inventoryData).map(([key, section]) => {
             const isActive = activeTab === key;

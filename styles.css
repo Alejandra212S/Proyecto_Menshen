@@ -88,6 +88,16 @@ body {
   display: none;
 }
 
+.footer-logo {
+  display: block;
+  width: min(180px, 70vw);
+  height: auto;
+  margin: 0 auto 12px;
+  background: transparent;
+  filter: brightness(0) invert(1);
+  -webkit-filter: brightness(0) invert(1);
+}
+
 /*  CONTENEDOR PRINCIPAL */
 
 #root > div {
@@ -242,9 +252,9 @@ main .grid p {
 nav {
   z-index: 50;
   background: rgba(255, 255, 255, 0.94) !important;
-  border-top: 1px solid var(--border) !important;
+  border-bottom: 1px solid var(--border) !important;
   box-shadow:
-    0 -4px 20px rgba(15, 23, 42, 0.06) !important;
+    0 4px 20px rgba(15, 23, 42, 0.06) !important;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
