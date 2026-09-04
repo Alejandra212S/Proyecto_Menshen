@@ -68,24 +68,29 @@ const inventoryData = {
   },
   recuperados: {
     title: "Equipos recuperados",
-    desc: "Descripción de los equipos que ha sido reparados, vendidos o reasignados a otra área",
+    desc: "Descripción de los equipos que han sido reparados, vendidos o reasignados a otra área",
     content: [
       { id: "PC-REC-01", name: "HP EliteDesk 800 G4", desc: "Reparación: Cambio de SSD y Fuente | Estado: Listo para reasignar" },
+
       { id: "LAP-REC-02", name: "MacBook Pro 13\" 2020", desc: "Reparación: Reemplazo de Batería | Estado: En pruebas" }
     ]
 
+
   },
-  buenEstado: {
-    title: "Equipo en Buen estado",
-    icon: <CheckCircle className="w-4 h-4" />,
+  Impresoras: {
+    title: "Impresoras y Toners",
+    desc: "Gestión de impresoras y consumibles.",
+
     content: [
-      { id: "SRV-MAIN-01", name: "Servidor HP ProLiant DL380", desc: "100% Funcional | Ubicación: Data Center" },
-      { id: "TAB-PAD-01", name: "iPad Air 5ª Gen", desc: "Excelente estado | Asignado a: Gerencia" }
+      { id: "IMP-01", name: "Impresora HP LaserJet Pro M404n", desc: "Estado: Operativa | Ubicación: Oficina Principal" },
+
+      { id: "IMP-02", name: "Impresora Epson EcoTank L3150", desc: "Estado: Operativa | Ubicación: Almacén" },
     ]
   },
-  contact: {
-    title: "Contact",
-    icon: <Mail className="w-4 h-4" />,
+  Telefonia: {
+    title: "Telefonía",
+    desc:"Gestión de telefonos y dispositivos de comunicación.",
+   
     content: [
       { id: "CNT-01", name: "", desc: "Ext:  | Corrreo:" },
       { id: "CNT-02", name: "Proveedor Técnico (Dell)", desc: "Tel: +52 800-123-4567 " }
