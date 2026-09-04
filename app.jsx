@@ -18,10 +18,10 @@ const inventoryData = {
     desc: "Bienvenido al sistema de inventario del area de TI. Aqui puedes ver los estados de los equipos,   ubicación y reportes de mantenimiento.",
     icon: <Home className="w-4-h-412/" />,
     metrics: [
-      { label: "Equipos activos", value: "18", tone: "gray" },
-      { label: "Con defectos", value: "6", tone: "gray" },
-      { label: "En uso", value: "56", tone: "gray" },
-      { label:"Disponibles", value:"20", tone :"gray"}
+      { label: "Equipos activos", value: "18", tone: "blue" },
+      { label: "Con defectos", value: "6", tone: "amber" },
+      { label: "En uso", value: "56", tone: "green" },
+      { label: "Disponibles", value: "20", tone: "violet" }
     ],
     content: [
       { id: "inicio-01", name: "Panel General de Equipos", desc: "Total de equipos: 24 | Activos: 18 | Con defectos: 6" },
@@ -184,6 +184,45 @@ function InventorySystem() {
                     </div>
                   ))}
                 </div>
+              </div>
+
+              <div className="dashboard-visuals">
+                <article className="chart-card status-chart-card">
+                  <div className="chart-heading">
+                    <div>
+                      <span className="chart-kicker">Indicadores</span>
+                      <h3>Estado de los equipos</h3>
+                    </div>
+                    <span className="chart-period">Este mes</span>
+                  </div>
+                  <div className="bar-chart" aria-label="Gráfico de estado de los equipos">
+                    {[{ label: "Activos", value: 90, tone: "blue" }, { label: "En uso", value: 72, tone: "green" }, { label: "Disponibles", value: 48, tone: "violet" }, { label: "Defectuosos", value: 28, tone: "amber" }].map((item) => (
+                      <div className="bar-item" key={item.label}>
+                        <div className="bar-value">{item.value}%</div>
+                        <div className="bar-track"><div className={`bar-fill bar-${item.tone}`} style={{ height: `${item.value}%` }} /></div>
+                        <span>{item.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </article>
+
+                <article className="chart-card asset-mix-card">
+                  <div className="chart-heading">
+                    <div>
+                      <span className="chart-kicker">Inventario</span>
+                      <h3>Distribución por tipo</h3>
+                    </div>
+                  </div>
+                  <div className="mix-content">
+                    <div className="donut-chart" aria-label="Distribución del inventario por tipo"><span>100<small>equipos</small></span></div>
+                    <div className="legend-list">
+                      <div><i className="legend-dot dot-blue" />Computadoras <strong>42%</strong></div>
+                      <div><i className="legend-dot dot-green" />Telefonía <strong>25%</strong></div>
+                      <div><i className="legend-dot dot-violet" />Impresoras <strong>18%</strong></div>
+                      <div><i className="legend-dot dot-amber" />Otros <strong>15%</strong></div>
+                    </div>
+                  </div>
+                </article>
               </div>
 
               <div className="home-grid">

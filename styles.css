@@ -222,6 +222,190 @@ main > div {
 .metric-amber strong { color: #d97706; }
 .metric-green strong { color: #16a34a; }
 .metric-red strong { color: #dc2626; }
+.metric-violet strong { color: #7c3aed; }
+
+.dashboard-visuals {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 1rem;
+}
+
+.chart-card {
+  min-width: 0;
+  padding: 1.2rem 1.25rem;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04);
+}
+
+.chart-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.chart-kicker {
+  color: #64748b;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.chart-heading h3 {
+  margin: 0.35rem 0 0;
+  color: #0f172a;
+  font-size: 1.05rem;
+}
+
+.chart-period {
+  padding: 0.35rem 0.55rem;
+  color: #2563eb;
+  background: #eff6ff;
+  border-radius: 7px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.bar-chart {
+  display: flex;
+  align-items: end;
+  justify-content: space-around;
+  gap: 0.8rem;
+  height: 190px;
+  margin-top: 1.1rem;
+  padding: 0 0.3rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.bar-item {
+  display: grid;
+  grid-template-rows: 20px 1fr 32px;
+  align-items: end;
+  width: 52px;
+  height: 100%;
+  text-align: center;
+}
+
+.bar-value {
+  color: #64748b;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.bar-track {
+  display: flex;
+  align-items: end;
+  width: 100%;
+  height: 125px;
+  overflow: hidden;
+  background: #f1f5f9;
+  border-radius: 8px 8px 3px 3px;
+}
+
+.bar-fill {
+  width: 100%;
+  min-height: 12px;
+  border-radius: 8px 8px 3px 3px;
+  animation: barRise 0.7s ease both;
+}
+
+.bar-blue { background: linear-gradient(180deg, #60a5fa, #2563eb); }
+.bar-green { background: linear-gradient(180deg, #4ade80, #16a34a); }
+.bar-violet { background: linear-gradient(180deg, #a78bfa, #7c3aed); }
+.bar-amber { background: linear-gradient(180deg, #fbbf24, #d97706); }
+
+.bar-item > span {
+  align-self: center;
+  color: #64748b;
+  font-size: 0.68rem;
+  line-height: 1.15;
+}
+
+.mix-content {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 190px;
+  margin-top: 0.6rem;
+}
+
+.donut-chart {
+  display: grid;
+  flex: 0 0 142px;
+  place-items: center;
+  width: 142px;
+  height: 142px;
+  border-radius: 50%;
+  background: conic-gradient(#2563eb 0 42%, #16a34a 42% 67%, #7c3aed 67% 85%, #d97706 85% 100%);
+}
+
+.donut-chart::after {
+  grid-area: 1 / 1;
+  width: 92px;
+  height: 92px;
+  content: "";
+  background: #fff;
+  border-radius: 50%;
+}
+
+.donut-chart span {
+  z-index: 1;
+  grid-area: 1 / 1;
+  color: #0f172a;
+  font-size: 1.35rem;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1;
+}
+
+.donut-chart small {
+  display: block;
+  margin-top: 0.25rem;
+  color: #64748b;
+  font-size: 0.62rem;
+  font-weight: 600;
+}
+
+.legend-list {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+  width: 100%;
+}
+
+.legend-list div {
+  display: grid;
+  grid-template-columns: 9px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+  color: #475569;
+  font-size: 0.73rem;
+}
+
+.legend-list strong {
+  color: #0f172a;
+  font-size: 0.72rem;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.dot-blue { background: #2563eb; }
+.dot-green { background: #16a34a; }
+.dot-violet { background: #7c3aed; }
+.dot-amber { background: #d97706; }
+
+@keyframes barRise {
+  from { transform: scaleY(0); transform-origin: bottom; }
+  to { transform: scaleY(1); transform-origin: bottom; }
+}
 
 .home-grid {
   display: grid;
@@ -568,6 +752,54 @@ main .grid > div:nth-child(6) {
   main .grid > div {
     padding: 18px !important;
   }
+
+  .home-hero,
+  .dashboard-visuals {
+    grid-template-columns: 1fr;
+  }
+
+  .home-hero {
+    padding: 1.1rem;
+    border-radius: 18px;
+  }
+
+  .hero-copy h2 {
+    font-size: 1.45rem;
+  }
+
+  .hero-copy p {
+    font-size: 0.88rem;
+  }
+
+  .chart-card {
+    padding: 1rem;
+  }
+
+  .bar-chart {
+    height: 175px;
+    gap: 0.45rem;
+  }
+
+  .bar-item {
+    width: 44px;
+  }
+
+  .mix-content {
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .donut-chart {
+    flex-basis: 124px;
+    width: 124px;
+    height: 124px;
+  }
+
+  .donut-chart::after {
+    width: 80px;
+    height: 80px;
+  }
+
   nav > div {
     justify-content: flex-start !important;
   }
