@@ -1,6 +1,16 @@
 
 const { useState } = React;
 
+const Icon = ({ symbol, className = '' }) => <span className={className} aria-hidden="true">{symbol}</span>;
+const Home = (props) => <Icon {...props} symbol="" />;
+const Monitor = (props) => <Icon {...props} symbol="" />;
+const Mouse = (props) => <Icon {...props} symbol="" />;
+const AlertTriangle = (props) => <Icon {...props} symbol="" />;
+const Grid = (props) => <Icon {...props} symbol="▦" />;
+const RotateCcw = (props) => <Icon {...props} symbol="↻" />;
+const CheckCircle = (props) => <Icon {...props} symbol="✓" />;
+const Mail = (props) => <Icon {...props} symbol="✉" />;
+
 const inventoryData = {
   inicio: {
     title: "Inicio",
@@ -36,8 +46,7 @@ const inventoryData = {
   noFuncionales: {
     title: "Equipos Defectuosos ",
     desc: "Para agregar un equipo con defectos debes de tomar una foto del equipo y subirla al sistema",
-    
-    content: [  
+    content: [
       { name: "Monitor Dell UltraSharp 24\"", desc: "Falla: Panel quemado | Estatus: Diagnosticado para baja" },
       { name: "Impresora Epson EcoTank L3150", desc: "Falla: Cabezal obstruido | Estatus: Pendiente de repuesto" }
     ]
@@ -61,9 +70,8 @@ const inventoryData = {
     title: "Equipos recuperados",
     desc: "Descripción de los equipos que ha sido reparados, vendidos o reasignados a otra área",
     content: [
-
-      {name: "HP EliteDesk 800 G4", desc: "Reparación: Cambio de SSD y Fuente | Estado: Vendido"},
-      {name: "MacBook Pro 13\" 2020", desc: "Defecto: Pantalla rayada | Estado: En pruebas" }
+      { id: "PC-REC-01", name: "HP EliteDesk 800 G4", desc: "Reparación: Cambio de SSD y Fuente | Estado: Listo para reasignar" },
+      { id: "LAP-REC-02", name: "MacBook Pro 13\" 2020", desc: "Reparación: Reemplazo de Batería | Estado: En pruebas" }
     ]
 
   },
