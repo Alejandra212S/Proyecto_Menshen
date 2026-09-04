@@ -9,6 +9,10 @@
   --warning-light: #fffbeb;
   --danger: #dc2626;
   --danger-light: #fef2f2;
+  --chart-blue: #55779a;
+  --chart-green: #668a78;
+  --chart-violet: #817594;
+  --chart-amber: #a1845d;
   --text-main: #111827;
   --text-secondary: #64748b;
   --text-muted: #94a3b8;
@@ -147,9 +151,9 @@ main > div {
   gap: 1rem;
   padding: 1.5rem;
   border-radius: 24px;
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 38%, #f8fbff 100%);
-  border: 1px solid rgba(96, 165, 250, 0.35);
-  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.08);
+  background: linear-gradient(135deg, #eef2f5 0%, #e3e9ee 42%, #f8fafb 100%);
+  border: 1px solid rgba(95, 119, 140, 0.24);
+  box-shadow: 0 14px 30px rgba(51, 65, 85, 0.07);
 }
 
 .hero-copy {
@@ -163,8 +167,8 @@ main > div {
   align-self: flex-start;
   padding: 0.45rem 0.8rem;
   border-radius: 999px;
-  background: rgba(37, 99, 235, 0.1);
-  color: var(--primary);
+  background: rgba(85, 119, 154, 0.12);
+  color: #466583;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -218,11 +222,11 @@ main > div {
   line-height: 1;
 }
 
-.metric-blue strong { color: #2563eb; }
-.metric-amber strong { color: #d97706; }
-.metric-green strong { color: #16a34a; }
+.metric-blue strong { color: var(--chart-blue); }
+.metric-amber strong { color: var(--chart-amber); }
+.metric-green strong { color: var(--chart-green); }
 .metric-red strong { color: #dc2626; }
-.metric-violet strong { color: #7c3aed; }
+.metric-violet strong { color: var(--chart-violet); }
 
 .dashboard-visuals {
   display: grid;
@@ -262,8 +266,8 @@ main > div {
 
 .chart-period {
   padding: 0.35rem 0.55rem;
-  color: #2563eb;
-  background: #eff6ff;
+  color: #466583;
+  background: #edf2f5;
   border-radius: 7px;
   font-size: 0.68rem;
   font-weight: 700;
@@ -313,10 +317,10 @@ main > div {
   animation: barRise 0.7s ease both;
 }
 
-.bar-blue { background: linear-gradient(180deg, #60a5fa, #2563eb); }
-.bar-green { background: linear-gradient(180deg, #4ade80, #16a34a); }
-.bar-violet { background: linear-gradient(180deg, #a78bfa, #7c3aed); }
-.bar-amber { background: linear-gradient(180deg, #fbbf24, #d97706); }
+.bar-blue { background: linear-gradient(180deg, #7894ad, var(--chart-blue)); }
+.bar-green { background: linear-gradient(180deg, #89a698, var(--chart-green)); }
+.bar-violet { background: linear-gradient(180deg, #a19ab0, var(--chart-violet)); }
+.bar-amber { background: linear-gradient(180deg, #b9a17d, var(--chart-amber)); }
 
 .bar-item > span {
   align-self: center;
@@ -340,7 +344,7 @@ main > div {
   width: 142px;
   height: 142px;
   border-radius: 50%;
-  background: conic-gradient(#2563eb 0 42%, #16a34a 42% 67%, #7c3aed 67% 85%, #d97706 85% 100%);
+  background: conic-gradient(var(--chart-blue) 0 42%, var(--chart-green) 42% 67%, var(--chart-violet) 67% 85%, var(--chart-amber) 85% 100%);
 }
 
 .donut-chart::after {
@@ -397,10 +401,10 @@ main > div {
   border-radius: 50%;
 }
 
-.dot-blue { background: #2563eb; }
-.dot-green { background: #16a34a; }
-.dot-violet { background: #7c3aed; }
-.dot-amber { background: #d97706; }
+.dot-blue { background: var(--chart-blue); }
+.dot-green { background: var(--chart-green); }
+.dot-violet { background: var(--chart-violet); }
+.dot-amber { background: var(--chart-amber); }
 
 @keyframes barRise {
   from { transform: scaleY(0); transform-origin: bottom; }
