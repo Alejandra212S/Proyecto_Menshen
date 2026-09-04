@@ -15,19 +15,19 @@ const Mail = (props) => <Icon {...props} symbol="く" />;
 const inventoryData = {
   inicio: {
     title: "Inicio",
-    desc: "Bienvendo al sistema de inventario del area de TI. Aqui puedes ver los estados de los equipos, ubicación y reportes de mantenimiento.",
+    desc: "Bienvendo al sistema de inventario del area de TI. Aqui puedes ver los estados de los equipos,   ubicación y reportes de mantenimiento.",
     icon: <Home className="w-4-h-412/" />,
     metrics: [
-      { label: "Equipos activos", value: "18", tone: "blue" },
-      { label: "Con defectos", value: "6", tone: "amber" },
-      { label: "En uso", value: "56", tone: "green" },
-      { label: "Alertas", value: "04", tone: "red" }
+      { label: "Equipos activos", value: "18", tone: "gray" },
+      { label: "Con defectos", value: "6", tone: "gray" },
+      { label: "En uso", value: "56", tone: "gray" },
+      { label:"Disponibles", value:"20", tone :"gray"}
     ],
     content: [
       { id: "inicio-01", name: "Panel General de Equipos", desc: "Total de equipos: 24 | Activos: 18 | Con defectos: 6" },
-      { id: "inicio-02", name: "Equipos por departamento", desc: "Total de equipos: 56 | En uso: 18" },
+      { id: "inicio-02", name: "Telefonia", desc: "Total de equipos: 56 | En uso: 18" },
       { id: "inicio-03", name: "Tipo de Equipos", desc: "Total de equipos: 24 | Activos: 18 | Con defectos: 6" },
-      { id: "inicio-04", name: "Alertas Recientes", desc: "Reporte de mantenimiento pendiente para Impresora Epson" }
+      { id: "inicio-04", name: "Impresoras", desc: "Reporte de toners, cartuchos y mantenimiento" }
     ]
   },
   computadoras: {
@@ -171,7 +171,7 @@ function InventorySystem() {
                   <span className="home-label">Resumen general</span>
                   <h2>Estado operativo del área de TI</h2>
                   <p>
-                    Aquí puedes monitorear el estado de los equipos, priorizar mantenimientos y
+                    Aquí puedes monitorear el estado de los equipos, revisar ckecklist de mantenimiento y
                     revisar rápidamente la operación del inventario.
                   </p>
                 </div>
