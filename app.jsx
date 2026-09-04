@@ -18,39 +18,39 @@ const inventoryData = {
     desc: "Bienvenido al sistema de inventario del area de TI. Aqui puedes ver los estados de los equipos,   ubicación y reportes de mantenimiento.",
     icon: <Home className="w-4-h-412/" />,
     metrics: [
-      { label: "Equipos activos", value: "18", tone: "gray" },
-      { label: "Con defectos", value: "6", tone: "gray" },
-      { label: "En uso", value: "56", tone: "gray" },
-      { label:"Disponibles", value:"20", tone :"gray"}
+      { label: "Equipos activos", tone: "gray" },
+      { label: "Con defectos", tone: "gray" },
+      { label: "En uso", tone: "gray" },
+      { label:"Disponibles", tone :"gray"}
     ],
     content: [
-      { id: "inicio-01", name: "Panel General de Equipos", desc: "Total de equipos: 24 | Activos: 18 | Con defectos: 6" },
-      { id: "inicio-02", name: "Telefonia", desc: "Total de equipos: 56 | En uso: 18" },
-      { id: "inicio-03", name: "Tipo de Equipos", desc: "Total de equipos: 24 | Activos: 18 | Con defectos: 6" },
+      { id: "inicio-01", name: "Panel General de Equipos", desc: "Total de equipos:  | Activos:  | Con defectos: " },
+      { id: "inicio-02", name: "Telefonia", desc: "Total de equipos:  | En uso: " },
+      { id: "inicio-03", name: "Tipo de Equipos", desc: "Total de equipos:  | Activos:  | Con defectos: " },
       { id: "inicio-04", name: "Impresoras", desc: "Reporte de toners, cartuchos y mantenimiento" }
     ]
   },
   computadoras: {
     title: "Equipo de computo",
-    //desc: "PCs, laptops, Tablets y monitores.",
-    //icon: <Monitor className="w-4-h-412/" />,
+    desc: "PCs, laptops, Tablets y monitores.",
+    icon: <Monitor className="w-4-h-412/" />,
 
-    //content: [
+    content: [
      // {name: "PC",desc: "Core i7, 16GB RAM | Estado: Operativo | Área: Administración" },
      // {name:"Tablets", desc: "Core i7, 32GB RAM | Estado: Operativo | Área: Desarrollo" },
      // {  name:"Monitores", desc: "Core i7, 32GB RAM | Estado: Operativo | Área: Desarrollo" }
 
-    //]
+    ]
   },
   licencias: {
     title: "Software y Licencias",
     desc: "Gestión de licencias de Software.",
      icon: <AlertTriangle className="w-4-h-412/" />,
     content: [
-      { name: "Total Licencias", desc: "Tipo de licencia: | Asignado a: Juan Pérez" },
-      { name: "En uso", desc: "100" },
-      { name: "Disponibles", desc: "50" },
-      { name: "Licencias próximas a vencer", desc: "Licencias adquiridas" }
+      //{ name: "Total Licencias", desc: "Tipo de licencia: | Asignado a: Juan Pérez" },
+      //{ name: "En uso", desc: "100" },
+      //{ name: "Disponibles", desc: "50" },
+      //{ name: "Licencias próximas a vencer", desc: "Licencias adquiridas" }
     ]
   },
   noFuncionales: {
@@ -58,8 +58,8 @@ const inventoryData = {
     desc: "Para agregar un equipo con defectos debes de tomar una foto del equipo y subirla al sistema",
      icon: <Mouse className="w-4-h-412/" />,
     content: [
-      { name: "Monitor Dell UltraSharp 24\"", desc: "Falla: Panel quemado | Estatus: Diagnosticado para baja" },
-      { name: "Impresora Epson EcoTank L3150", desc: "Falla: Cabezal obstruido | Estatus: Pendiente de repuesto" }
+      //{ name: "Monitor Dell UltraSharp 24\"", desc: "Falla: Panel quemado | Estatus: Diagnosticado para baja" },
+      //{ name: "Impresora Epson EcoTank L3150", desc: "Falla: Cabezal obstruido | Estatus: Pendiente de repuesto" }
     ]
   },
   porArea: {
@@ -67,15 +67,6 @@ const inventoryData = {
     desc:"Descripción de los equipos por área ",
      icon: <Grid className="w-4-h-412/" />,
     content: [
-      {name: "Departamento de Finanzas", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
-      {name: "Departamento de Almacen", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
-      {name: "Departamento Comercial", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
-      {name: "Departamento de Compras", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
-      {name: "Departamento de Mantenimiento", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
-      {name: "Departamento de Finanzas", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
-      {name: "Departamento Moldes", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
-      {name: "Departamento de Producción", desc: "1x Servidor Contable (Dell PowerEdge), 2x Laptops HP ProBook" },
-      { name: "Departamento de Calidad", desc: "2x Apple iMac 27\" M1, 1x Tableta Wacom Intuos" }
     ]
   },
   recuperados: {
@@ -83,9 +74,7 @@ const inventoryData = {
     desc: "Descripción de los equipos que han sido reparados, vendidos o reasignados a otra área",
     icon: <RotateCcw className="w-4-h-412/" />,
     content: [
-      { id: "PC-REC-01", name: "HP EliteDesk 800 G4", desc: "Reparación: Cambio de SSD y Fuente | Estado: Listo para reasignar" },
 
-      { id: "LAP-REC-02", name: "MacBook Pro 13\" 2020", desc: "Reparación: Reemplazo de Batería | Estado: En pruebas" }
     ]
 
 
@@ -96,9 +85,6 @@ const inventoryData = {
     icon: <RotateCcw className="w-4-h-412/" />,
 
     content: [
-      { id: "IMP-01", name: "Impresora HP LaserJet Pro M404n", desc: "Estado: Operativa | Ubicación: Oficina Principal" },
-
-      { id: "IMP-02", name: "Impresora Epson EcoTank L3150", desc: "Estado: Operativa | Ubicación: Almacén" },
     ]
   },
   Telefonia: {
@@ -107,9 +93,6 @@ const inventoryData = {
     icon: <CheckCircle className="w-4-h-412/" />,
    
     content: [
-      { id: "CNT-01", name: "Anaya", desc:"Area: Sistemas | no de extensión | Linea directa: 72222770511 | no de Serie: 001b4f377304 ! no.Interno 412 | Direcciones IP | Extension: 193 ° Dirección MAC" },
-
-      { id: "CNT-02", name: "Anaya", desc:"Area: Sistemas | no de extensión | Linea directa: 72222770511 | no de Serie: 001b4f377304 ! no.Interno 412 | Direcciones IP" }
     ]
   },
   Poliza: {
@@ -118,16 +101,6 @@ const inventoryData = {
     icon: <Mail className="w-4-h-412/" />,
 
     content: [
-      {
-        id: "POL-01",
-        name: "Nombre del programa",
-        desc: "Tipo: Comprado | Versión: | Proveedor: | Área: Finanzas | Fecha de instalación: | Descripción de la póliza de mantenimiento."
-      },
-
-      { id: "POL-02",
-        name: "Nombre del programa",
-        desc: "Tipo: Comprado | Versión: | Proveedor: | Área: Finanzas | Fecha de instalación: | Descripción de la póliza de mantenimiento."
-      }
     ]
   },
   Articulos: {
@@ -136,9 +109,6 @@ const inventoryData = {
     icon: <Mail className="w-4-h-412/" />,
 
     content: [
-      {id: "AR-001", name: "USB 165 G", desc: "Cantidad asignada :3 |usuarios:Solicito Moldes ignacio perose le entregaron a David Perez | Fecha de entrega: 2024-05-10 | Estado: En uso" },
-
-         {id: "AR-002", name: "Convertidor HDMI A¿ a VGA", desc: "Cantidad asignada :1 |usuariIS: Davi Estrada Da| Fecha de entrega: 2024-05-10 | Estado: En uso" },
     ]
   }
 };
@@ -196,7 +166,7 @@ function InventorySystem() {
                     <span className="chart-period">Este mes</span>
                   </div>
                   <div className="bar-chart" aria-label="Gráfico de estado de los equipos">
-                    {[{ label: "Activos", value: 90, tone: "blue" }, { label: "En uso", value: 72, tone: "green" }, { label: "Disponibles", value: 48, tone: "violet" }, { label: "Defectuosos", value: 28, tone: "amber" }].map((item) => (
+                    {[{ label: "Activos", tone: "blue" }, { label: "En uso", tone: "green" }, { label: "Disponibles", tone: "violet" }, { label: "Defectuosos", tone: "amber" }].map((item) => (
                       <div className="bar-item" key={item.label}>
                         <div className="bar-value">{item.value}%</div>
                         <div className="bar-track"><div className={`bar-fill bar-${item.tone}`} style={{ height: `${item.value}%` }} /></div>
@@ -214,12 +184,12 @@ function InventorySystem() {
                     </div>
                   </div>
                   <div className="mix-content">
-                    <div className="donut-chart" aria-label="Distribución del inventario por tipo"><span>100<small>equipos</small></span></div>
+                    <div className="donut-chart" aria-label="Distribución del inventario por tipo"><span>0<small>equipos</small></span></div>
                     <div className="legend-list">
-                      <div><i className="legend-dot dot-blue" />Computadoras <strong>42%</strong></div>
-                      <div><i className="legend-dot dot-green" />Telefonía <strong>25%</strong></div>
-                      <div><i className="legend-dot dot-violet" />Impresoras <strong>18%</strong></div>
-                      <div><i className="legend-dot dot-amber" />Otros <strong>15%</strong></div>
+                      <div><i className="legend-dot dot-blue" />Computadoras <strong>%</strong></div>
+                      <div><i className="legend-dot dot-green" />Telefonía <strong>%</strong></div>
+                      <div><i className="legend-dot dot-violet" />Impresoras <strong>%</strong></div>
+                      <div><i className="legend-dot dot-amber" />Otros <strong>%</strong></div>
                     </div>
                   </div>
                 </article>
