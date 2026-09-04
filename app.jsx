@@ -92,8 +92,21 @@ const inventoryData = {
     desc:"Gestión de telefonos y dispositivos de comunicación.",
    
     content: [
-      { id: "CNT-01", name: "", desc: "Ext:  | Corrreo:" },
-      { id: "CNT-02", name: "Proveedor Técnico (Dell)", desc: "Tel: +52 800-123-4567 " }
+      { id: "CNT-01", name: "Anaya", desc:"Area: Sistemas | no de extensión | Linea directa: 72222770511 | no de Serie: 001b4f377304 ! no.Interno 412 | Direcciones IP | Extension: 193 ° Dirección MAC" },
+
+      { id: "CNT-02", name: "Anaya", desc:"Area: Sistemas | no de extensión | Linea directa: 72222770511 | no de Serie: 001b4f377304 ! no.Interno 412 | Direcciones IP" }
+    ]
+  },
+  Poliza: {
+    title: "Programas y polizas de soporte",
+    desc: "Gestión de programas y polizas de soporte.",
+
+    content: [
+      {
+        id: "POL-01",
+        name: "Nombre del programa",
+        desc: "Tipo: Comprado | Versión: | Proveedor: | Área: Finanzas | Fecha de instalación: | Descripción de la póliza de mantenimiento."
+      }
     ]
   }
 };
@@ -154,4 +167,3 @@ if (ReactDOM.createRoot) {
 } else {
   ReactDOM.render(<InventorySystem />, rootElement);
 }
-
