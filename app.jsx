@@ -15,13 +15,19 @@ const Mail = (props) => <Icon {...props} symbol="く" />;
 const inventoryData = {
   inicio: {
     title: "Inicio",
-      desc: "Bienvendo al sistema de inventario del area de TI. Aqui puedes ver los estados de los equipos, ubicación y reportes de mantenimiento.",
-      icon: <Home className="w-4-h-412/" />,
+    desc: "Bienvendo al sistema de inventario del area de TI. Aqui puedes ver los estados de los equipos, ubicación y reportes de mantenimiento.",
+    icon: <Home className="w-4-h-412/" />,
+    metrics: [
+      { label: "Equipos activos", value: "18", tone: "blue" },
+      { label: "Con defectos", value: "6", tone: "amber" },
+      { label: "En uso", value: "56", tone: "green" },
+      { label: "Alertas", value: "04", tone: "red" }
+    ],
     content: [
-      { name: "Panel General de Equipos", desc: "Total de equipos: 24 | Activos: 18 | Con defectos: 6" },
-       { name: "Equipos por departamento", desc: "Total de equipos: 56 | En uso: 18" },
-        { name: "Tipo de Equipos", desc: "Total de equipos: 24 | Activos: 18 | Con defectos: 6" },
-      {name: "Alertas Recientes", desc: "Reporte de mantenimiento pendiente para Impresora Epson" }
+      { id: "inicio-01", name: "Panel General de Equipos", desc: "Total de equipos: 24 | Activos: 18 | Con defectos: 6" },
+      { id: "inicio-02", name: "Equipos por departamento", desc: "Total de equipos: 56 | En uso: 18" },
+      { id: "inicio-03", name: "Tipo de Equipos", desc: "Total de equipos: 24 | Activos: 18 | Con defectos: 6" },
+      { id: "inicio-04", name: "Alertas Recientes", desc: "Reporte de mantenimiento pendiente para Impresora Epson" }
     ]
   },
   computadoras: {
@@ -139,6 +145,7 @@ const inventoryData = {
 
 function InventorySystem() {
   const [activeTab, setActiveTab] = useState('inicio');
+  const isHome = activeTab === 'inicio';
 
   return (
     <div className="flex flex-col h-screen bg-gray-50 text-gray-800">
@@ -146,8 +153,8 @@ function InventorySystem() {
         <h1 className="text-2xl font-bold">menshen</h1>
       </header>
       <main className="flex-1 p-6 overflow-y-auto pt-28 pb-6">
-        <div className="max-w-4xl mx-auto">
-          <header className="mb-6 border-b pb-4">
+        <div className="max-w-5xl mx-auto">
+          <header className="page-header mb-6 border-b pb-4">
             <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
               {inventoryData[activeTab].icon}
               {inventoryData[activeTab].title}
@@ -155,18 +162,51 @@ function InventorySystem() {
             {inventoryData[activeTab].desc && (
               <p className="mt-3 text-sm text-gray-700">{inventoryData[activeTab].desc}</p>
             )}
-            <p className="text-sm text-gray-700 mt-2">
-            </p>
           </header>
-          <div className="grid gap-4 md:grid-cols-2">
-            {inventoryData[activeTab].content.map((item) => (
-              <div key={item.id} className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                <div className="text-xs font-semibold text-blue-600 mb-1">{item.id}</div>
-                <h3 className="font-semibold text-gray-900 mb-1">{item.name}</h3>
-                <p className="text-sm text-gray-600">{item.desc}</p>
+
+          {isHome ? (
+            <section className="home-shell">
+              <div className="home-hero">
+                <div className="hero-copy">
+                  <span className="home-label">Resumen general</span>
+                  <h2>Estado operativo del área de TI</h2>
+                  <p>
+                    Aquí puedes monitorear el estado de los equipos, priorizar mantenimientos y
+                    revisar rápidamente la operación del inventario.
+                  </p>
+                </div>
+
+                <div className="hero-stats">
+                  {inventoryData.inicio.metrics.map((metric) => (
+                    <div key={metric.label} className={`metric-card metric-${metric.tone}`}>
+                      <span>{metric.label}</span>
+                      <strong>{metric.value}</strong>
+                    </div>
+                  ))}
+                </div>
               </div>
-            ))}
-          </div>
+
+              <div className="home-grid">
+                {inventoryData[activeTab].content.map((item, index) => (
+                  <div key={item.id || `${item.name}-${index}`} className="feature-card">
+                    <div className="feature-badge">{item.id}</div>
+                    <h3>{item.name}</h3>
+                    <p>{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2">
+              {inventoryData[activeTab].content.map((item, index) => (
+                <div key={item.id || `${item.name}-${index}`} className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="text-xs font-semibold text-blue-600 mb-1">{item.id}</div>
+                  <h3 className="font-semibold text-gray-900 mb-1">{item.name}</h3>
+                  <p className="text-sm text-gray-600">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </main>
       <nav className="fixed top-0 left-0 right-0 bg-white border-b border-gray-300 shadow-lg z-50">
