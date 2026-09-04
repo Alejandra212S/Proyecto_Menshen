@@ -15,7 +15,7 @@ const Mail = (props) => <Icon {...props} symbol="く" />;
 const inventoryData = {
   inicio: {
     title: "Inicio",
-    desc: "Bienvendo al sistema de inventario del area de TI. Aqui puedes ver los estados de los equipos,   ubicación y reportes de mantenimiento.",
+    desc: "Bienvenido al sistema de inventario del area de TI. Aqui puedes ver los estados de los equipos,   ubicación y reportes de mantenimiento.",
     icon: <Home className="w-4-h-412/" />,
     metrics: [
       { label: "Equipos activos", value: "18", tone: "gray" },
