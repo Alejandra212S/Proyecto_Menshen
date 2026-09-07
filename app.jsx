@@ -39,58 +39,7 @@ const inventoryData = {
     icon: <Monitor className="w-4-h-412/" />,
 
     content: [
-      {
-        id: "PC-ADM-001",
-        name: "Dell OptiPlex 7090",
-        type: "PC de escritorio",
-        status: "Operativo",
-        area: "Administración",
-        specs: [
-          ["Procesador", "Intel Core i7-11700"],
-          ["Memoria RAM", "16 GB DDR4"],
-          ["Almacenamiento", "512 GB SSD"],
-          ["Sistema", "Windows 11 Pro"]
-        ]
-      },
-      {
-        id: "",
-        name: "Lenovo ThinkPad E14",
-        type: "Laptop",
-        status: "En uso",
-        area: "",
-        specs: [
-          ["Procesador", "Intel Core i5-1235U"],
-          ["Memoria RAM", "16 GB DDR4"],
-          ["Almacenamiento", "1 TB SSD NVMe"],
-          ["Sistema", "Windows 11 Pro"]
-        ]
-      },
-      {
-        id: "",
-        name: "Samsung Galaxy Tab S9",
-        type: "Tablet",
-        status: "Disponible",
-        area: "",
-        specs: [
-          ["Procesador", "Snapdragon 8 Gen 2"],
-          ["Memoria RAM", "8 GB"],
-          ["Almacenamiento", "128 GB"],
-          ["Sistema", "Android 13"]
-        ]
-      },
-      {
-        id: "",
-        name: "Monitor LG UltraGear 27GN800",
-        type: "Monitor",
-        status: "Operativo",
-        area: "",
-        specs: [
-          ["Pantalla", "27 pulgadas QHD"],
-          ["Resolución", "2560 x 1440 px"],
-          ["Conexiones", "HDMI / DisplayPort"],
-          ["Asignado a", "Estación de trabajo 04"]
-        ]
-      }
+      
     ]
   },
   licencias: {
@@ -362,13 +311,6 @@ function InventorySystem() {
                         <option>Sistemas</option>
                       </select>
 
-                       <select value={newEquipmentArea} onChange={(event) => setNewEquipmentArea(event.target.value)} aria-label="RAM" required>
-                        <option value="">Detalles del Equipo</option>
-                        <option>Procesador</option>
-                        <option>Memoria RAM</option>
-                        <option>Almacenamiento</option>
-                        <option>Sistema</option>
-                      </select>
 
 
 
