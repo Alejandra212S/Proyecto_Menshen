@@ -37,11 +37,11 @@ const inventoryData = {
 
     content: [
       {
-        id: "PC-ADM-001",
-        name: "Dell OptiPlex 7090",
+        id: "",
+        name: "D",
         type: "PC de escritorio",
         status: "Operativo",
-        area: "Administración",
+        area: "",
         specs: [
           ["Procesador", "Intel Core i7-11700"],
           ["Memoria RAM", "16 GB DDR4"],
@@ -50,11 +50,11 @@ const inventoryData = {
         ]
       },
       {
-        id: "LT-DIS-002",
+        id: "",
         name: "Lenovo ThinkPad E14",
         type: "Laptop",
         status: "En uso",
-        area: "Diseño y desarrollo",
+        area: "",
         specs: [
           ["Procesador", "Intel Core i5-1235U"],
           ["Memoria RAM", "16 GB DDR4"],
@@ -63,11 +63,11 @@ const inventoryData = {
         ]
       },
       {
-        id: "TB-RH-003",
+        id: "",
         name: "Samsung Galaxy Tab S9",
         type: "Tablet",
         status: "Disponible",
-        area: "Recursos humanos",
+        area: "",
         specs: [
           ["Procesador", "Snapdragon 8 Gen 2"],
           ["Memoria RAM", "8 GB"],
@@ -76,11 +76,11 @@ const inventoryData = {
         ]
       },
       {
-        id: "MN-ING-004",
+        id: "",
         name: "Monitor LG UltraGear 27GN800",
         type: "Monitor",
         status: "Operativo",
-        area: "Ingeniería",
+        area: "",
         specs: [
           ["Pantalla", "27 pulgadas QHD"],
           ["Resolución", "2560 x 1440 px"],

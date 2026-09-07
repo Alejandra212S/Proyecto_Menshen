@@ -1,0 +1,46 @@
+type Area @table {
+  name: String!
+  locationCode: String!
+  departmentHead: String
+}
+
+type Asset @table {
+  name: String!
+  type: String!
+  status: String!
+  serialNumber: String!
+  description: String
+  imageUrl: String
+  area: Area
+}
+
+type Specification @table {
+  label: String!
+  value: String!
+  asset: Asset!
+}
+
+type License @table {
+  name: String!
+  softwareProvider: String!
+  expirationDate: Date!
+  assignedTo: String
+  seatCount: Int
+}
+
+type IncidentReport @table {
+  description: String!
+  reportDate: Timestamp!
+  photoUrl: String
+  technicianNotes: String
+  status: String
+  asset: Asset!
+}
+
+type SupportPolicy @table {
+  providerName: String!
+  policyReference: String!
+  startDate: Date!
+  endDate: Date!
+  coverageScope: String
+}
