@@ -15,7 +15,7 @@ const Mail = (props) => <Icon {...props} symbol="く" />;
 const inventoryData = {
   inicio: {
     title: "Inicio",
-    desc: "Bienvenido al sistema de inventario del area de TI. Aqui puedes ver los estados de los equipos,   ubicación y reportes de mantenimiento.",
+    desc: "Bienvenido al sistema de inventario del area de TI. Aqui puedes ver los estados de los equipos de computo, impresoras y telefonia.",
     icon: <Home className="w-4-h-412/" />,
     metrics: [
       { label: "Equipos activos", tone: "gray" },
@@ -26,20 +26,68 @@ const inventoryData = {
     content: [
       { id: "inicio-01", name: "Panel General de Equipos", desc: "Total de equipos:  | Activos:  | Con defectos: " },
       { id: "inicio-02", name: "Telefonia", desc: "Total de equipos:  | En uso: " },
-      { id: "inicio-03", name: "Tipo de Equipos", desc: "Total de equipos:  | Activos:  | Con defectos: " },
+      { id: "inicio-03", name: "Tipo de Equipos", desc: "Total de equipos: o | Activos:  | Con defectos: " },
       { id: "inicio-04", name: "Impresoras", desc: "Reporte de toners, cartuchos y mantenimiento" }
     ]
   },
   computadoras: {
     title: "Equipo de computo",
-    desc: "PCs, laptops, Tablets y monitores.",
+    desc: "Consulta el inventario técnico de PCs, laptops, tablets y monitores.",
     icon: <Monitor className="w-4-h-412/" />,
 
     content: [
-     // {name: "PC",desc: "Core i7, 16GB RAM | Estado: Operativo | Área: Administración" },
-     // {name:"Tablets", desc: "Core i7, 32GB RAM | Estado: Operativo | Área: Desarrollo" },
-     // {  name:"Monitores", desc: "Core i7, 32GB RAM | Estado: Operativo | Área: Desarrollo" }
-
+      {
+        id: "PC-ADM-001",
+        name: "Dell OptiPlex 7090",
+        type: "PC de escritorio",
+        status: "Operativo",
+        area: "Administración",
+        specs: [
+          ["Procesador", "Intel Core i7-11700"],
+          ["Memoria RAM", "16 GB DDR4"],
+          ["Almacenamiento", "512 GB SSD"],
+          ["Sistema", "Windows 11 Pro"]
+        ]
+      },
+      {
+        id: "LT-DIS-002",
+        name: "Lenovo ThinkPad E14",
+        type: "Laptop",
+        status: "En uso",
+        area: "Diseño y desarrollo",
+        specs: [
+          ["Procesador", "Intel Core i5-1235U"],
+          ["Memoria RAM", "16 GB DDR4"],
+          ["Almacenamiento", "1 TB SSD NVMe"],
+          ["Sistema", "Windows 11 Pro"]
+        ]
+      },
+      {
+        id: "TB-RH-003",
+        name: "Samsung Galaxy Tab S9",
+        type: "Tablet",
+        status: "Disponible",
+        area: "Recursos humanos",
+        specs: [
+          ["Procesador", "Snapdragon 8 Gen 2"],
+          ["Memoria RAM", "8 GB"],
+          ["Almacenamiento", "128 GB"],
+          ["Sistema", "Android 13"]
+        ]
+      },
+      {
+        id: "MN-ING-004",
+        name: "Monitor LG UltraGear 27GN800",
+        type: "Monitor",
+        status: "Operativo",
+        area: "Ingeniería",
+        specs: [
+          ["Pantalla", "27 pulgadas QHD"],
+          ["Resolución", "2560 x 1440 px"],
+          ["Conexiones", "HDMI / DisplayPort"],
+          ["Asignado a", "Estación de trabajo 04"]
+        ]
+      }
     ]
   },
   licencias: {
@@ -110,6 +158,14 @@ const inventoryData = {
 
     content: [
     ]
+  },
+  Configuración: {
+    title: "Configuración",
+    desc: "Configuración del sistema.",
+    icon: <Mail className="w-4-h-412/" />,
+
+    content: [
+    ]
   }
 };
 
@@ -141,7 +197,7 @@ function InventorySystem() {
                   <span className="home-label">Resumen general</span>
                   <h2>Estado operativo del área de TI</h2>
                   <p>
-                    Aquí puedes monitorear el estado de los equipos, revisar ckecklist de mantenimiento y
+                    Puedes monitorear el estado de los equipos, revisar ckecklist de mantenimiento y
                     revisar rápidamente la operación del inventario.
                   </p>
                 </div>
@@ -206,12 +262,27 @@ function InventorySystem() {
               </div>
             </section>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className={`grid gap-4 md:grid-cols-2 ${activeTab === 'computadoras' ? 'equipment-grid' : ''}`}>
               {inventoryData[activeTab].content.map((item, index) => (
-                <div key={item.id || `${item.name}-${index}`} className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                <div key={item.id || `${item.name}-${index}`} className={`p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow ${item.specs ? 'equipment-card' : ''}`}>
                   <div className="text-xs font-semibold text-blue-600 mb-1">{item.id}</div>
-                  <h3 className="font-semibold text-gray-900 mb-1">{item.name}</h3>
-                  <p className="text-sm text-gray-600">{item.desc}</p>
+                  <div className="equipment-card-heading">
+                    <div>
+                      <h3 className="font-semibold text-gray-900 mb-1">{item.name}</h3>
+                      {item.type && <span className="equipment-type">{item.type}</span>}
+                    </div>
+                    {item.status && <span className={`equipment-status status-${item.status.toLowerCase().replace(' ', '-')}`}>{item.status}</span>}
+                  </div>
+                  {item.specs ? (
+                    <>
+                      <div className="equipment-meta"><span>Área</span><strong>{item.area}</strong></div>
+                      <dl className="equipment-specs">
+                        {item.specs.map(([label, value]) => (
+                          <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
+                        ))}
+                      </dl>
+                    </>
+                  ) : <p className="text-sm text-gray-600">{item.desc}</p>}
                 </div>
               ))}
             </div>
