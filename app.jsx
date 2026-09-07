@@ -11,6 +11,9 @@ const Grid = (props) => <Icon {...props} symbol="⦾" />;
 const RotateCcw = (props) => <Icon {...props} symbol="↻" />;
 const CheckCircle = (props) => <Icon {...props} symbol="✓" />;
 const Mail = (props) => <Icon {...props} symbol="く" />;
+const Search = (props) => <Icon {...props} symbol="⌕" />;
+const Plus = (props) => <Icon {...props} symbol="＋" />;
+const Archive = (props) => <Icon {...props} symbol="▣" />;
 
 const inventoryData = {
   inicio: {
@@ -37,11 +40,11 @@ const inventoryData = {
 
     content: [
       {
-        id: "",
-        name: "D",
+        id: "PC-ADM-001",
+        name: "Dell OptiPlex 7090",
         type: "PC de escritorio",
         status: "Operativo",
-        area: "",
+        area: "Administración",
         specs: [
           ["Procesador", "Intel Core i7-11700"],
           ["Memoria RAM", "16 GB DDR4"],
@@ -171,7 +174,49 @@ const inventoryData = {
 
 function InventorySystem() {
   const [activeTab, setActiveTab] = useState('inicio');
+  const [equipmentList, setEquipmentList] = useState(inventoryData.computadoras.content);
+  const [equipmentSearch, setEquipmentSearch] = useState('');
+  const [selectedEquipmentId, setSelectedEquipmentId] = useState(null);
+  const [showEquipmentForm, setShowEquipmentForm] = useState(false);
+  const [newEquipmentName, setNewEquipmentName] = useState('');
+  const [newEquipmentType, setNewEquipmentType] = useState('PC de escritorio');
+  const [newEquipmentArea, setNewEquipmentArea] = useState('');
   const isHome = activeTab === 'inicio';
+  const visibleEquipment = equipmentList.filter((item) => {
+    const searchableText = `${item.id} ${item.name} ${item.type} ${item.area}`.toLowerCase();
+    return searchableText.includes(equipmentSearch.toLowerCase());
+  });
+
+  const handleAddEquipment = (event) => {
+    event.preventDefault();
+    if (!newEquipmentName.trim()) return;
+
+    const newEquipment = {
+      id: `EQ-${String(equipmentList.length + 1).padStart(3, '0')}`,
+      name: newEquipmentName.trim(),
+      type: newEquipmentType,
+      status: 'Disponible',
+      area: newEquipmentArea.trim() || 'Sin asignar',
+      specs: [
+        ['Procesador', 'Pendiente de registrar'],
+        ['Memoria RAM', 'Pendiente de registrar'],
+        ['Almacenamiento', 'Pendiente de registrar'],
+        ['Sistema', 'Pendiente de registrar']
+      ]
+    };
+
+    setEquipmentList((currentEquipment) => [...currentEquipment, newEquipment]);
+    setNewEquipmentName('');
+    setNewEquipmentArea('');
+    setShowEquipmentForm(false);
+    setSelectedEquipmentId(newEquipment.id);
+  };
+
+  const handleRetireEquipment = () => {
+    if (!selectedEquipmentId) return;
+    setEquipmentList((currentEquipment) => currentEquipment.filter((item) => item.id !== selectedEquipmentId));
+    setSelectedEquipmentId(null);
+  };
 
   return (
     <div className="flex flex-col h-screen bg-gray-50 text-gray-800">
@@ -262,9 +307,80 @@ function InventorySystem() {
               </div>
             </section>
           ) : (
-            <div className={`grid gap-4 md:grid-cols-2 ${activeTab === 'computadoras' ? 'equipment-grid' : ''}`}>
-              {inventoryData[activeTab].content.map((item, index) => (
-                <div key={item.id || `${item.name}-${index}`} className={`p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow ${item.specs ? 'equipment-card' : ''}`}>
+            <>
+              {activeTab === 'computadoras' && (
+                <section className="equipment-actions" aria-label="Acciones del inventario de equipos">
+                  <div className="equipment-action-heading">
+                    <div>
+                      <span className="chart-kicker">Inventario de hardware</span>
+                      <h2>Equipos registrados</h2>
+                    </div>
+                    <span className="equipment-count">{visibleEquipment.length} equipos</span>
+                  </div>
+                  <div className="equipment-action-row">
+                    <label className="equipment-search">
+                      <Search />
+                      <span className="sr-only">Buscar equipos</span>
+                      <input
+                        type="search"
+                        value={equipmentSearch}
+                        onChange={(event) => setEquipmentSearch(event.target.value)}
+                        placeholder="Buscar por nombre, ID, tipo o área"
+                      />
+                    </label>
+                    <button type="button" className="equipment-action-button button-primary" onClick={() => setShowEquipmentForm((isOpen) => !isOpen)}>
+                      <Plus /> Agregar equipo
+                    </button>
+                    <button type="button" className="equipment-action-button button-danger" onClick={handleRetireEquipment} disabled={!selectedEquipmentId}>
+                      <Archive /> Dar de baja
+                    </button>
+                  </div>
+                  {showEquipmentForm && (
+                    <form className="equipment-form" onSubmit={handleAddEquipment}>
+                      <input value={newEquipmentName} onChange={(event) => setNewEquipmentName(event.target.value)} placeholder="Nombre o modelo" aria-label="Nombre o modelo" required />
+
+                      <select value={newEquipmentType} onChange={(event) => setNewEquipmentType(event.target.value)} aria-label="Tipo de equipo">
+                        <option value="">Selecciona el tipo de equipo</option>
+                        <option>PC de escritorio</option>
+                        <option>Laptop</option>
+                        <option>Tablet</option>
+                        <option>Monitor</option>
+                      </select>
+
+                     
+                      <select value={newEquipmentArea} onChange={(event) => setNewEquipmentArea(event.target.value)} aria-label="Área asignada" required>
+                        <option value="">Selecciona un área</option>
+                        <option>Almacén</option>
+                        <option>Calidad</option>
+                        <option>Comercial</option>
+                        <option>Compras</option>
+                        <option>Finanzas</option>
+                        <option>Mantenimiento</option>
+                        <option>Moldes</option>
+                        <option>Producción</option>
+                        <option>Recursos Humanos</option>
+                        <option>Sistemas</option>
+                      </select>
+
+                       <select value={newEquipmentArea} onChange={(event) => setNewEquipmentArea(event.target.value)} aria-label="RAM" required>
+                        <option value="">Detalles del Equipo</option>
+                        <option>Procesador</option>
+                        <option>Memoria RAM</option>
+                        <option>Almacenamiento</option>
+                        <option>Sistema</option>
+                      </select>
+
+
+
+                      <button type="submit" className="equipment-form-submit">Guardar equipo</button>
+                    </form>
+                  )}
+                  {!selectedEquipmentId && <p className="equipment-action-help">Selecciona una ficha para habilitar la baja del equipo.</p>}
+                </section>
+              )}
+              <div className={`grid gap-4 md:grid-cols-2 ${activeTab === 'computadoras' ? 'equipment-grid' : ''}`}>
+              {(activeTab === 'computadoras' ? visibleEquipment : inventoryData[activeTab].content).map((item, index) => (
+                <div key={item.id || `${item.name}-${index}`} onClick={() => item.specs && setSelectedEquipmentId(item.id)} className={`p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow ${item.specs ? 'equipment-card' : ''} ${selectedEquipmentId === item.id ? 'equipment-card-selected' : ''}`}>
                   <div className="text-xs font-semibold text-blue-600 mb-1">{item.id}</div>
                   <div className="equipment-card-heading">
                     <div>
@@ -285,7 +401,8 @@ function InventorySystem() {
                   ) : <p className="text-sm text-gray-600">{item.desc}</p>}
                 </div>
               ))}
-            </div>
+              </div>
+            </>
           )}
         </div>
       </main>
