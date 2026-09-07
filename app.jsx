@@ -130,7 +130,11 @@ function InventorySystem() {
   const [newEquipmentName, setNewEquipmentName] = useState('');
   const [newEquipmentType, setNewEquipmentType] = useState('PC de escritorio');
   const [newEquipmentArea, setNewEquipmentArea] = useState('');
+  const [newEquipmentSpecs, setNewEquipmentSpecs] = useState({});
   const isHome = activeTab === 'inicio';
+  const specFields = newEquipmentType === 'Monitor'
+    ? ['Pantalla', 'Resolución', 'Conexiones', 'Asignado a']
+    : ['Procesador', 'Memoria RAM',, 'Sistema'];
   const visibleEquipment = equipmentList.filter((item) => {
     const searchableText = `${item.id} ${item.name} ${item.type} ${item.area}`.toLowerCase();
     return searchableText.includes(equipmentSearch.toLowerCase());
@@ -146,17 +150,13 @@ function InventorySystem() {
       type: newEquipmentType,
       status: 'Disponible',
       area: newEquipmentArea.trim() || 'Sin asignar',
-      specs: [
-        ['Procesador', 'Pendiente de registrar'],
-        ['Memoria RAM', 'Pendiente de registrar'],
-        ['Almacenamiento', 'Pendiente de registrar'],
-        ['Sistema', 'Pendiente de registrar']
-      ]
+      specs: specFields.map((field) => [field, newEquipmentSpecs[field].trim()])
     };
 
     setEquipmentList((currentEquipment) => [...currentEquipment, newEquipment]);
     setNewEquipmentName('');
     setNewEquipmentArea('');
+    setNewEquipmentSpecs({});
     setShowEquipmentForm(false);
     setSelectedEquipmentId(newEquipment.id);
   };
@@ -286,36 +286,70 @@ function InventorySystem() {
                   </div>
                   {showEquipmentForm && (
                     <form className="equipment-form" onSubmit={handleAddEquipment}>
-                      <input value={newEquipmentName} onChange={(event) => setNewEquipmentName(event.target.value)} placeholder="Nombre o modelo" aria-label="Nombre o modelo" required />
-
-                      <select value={newEquipmentType} onChange={(event) => setNewEquipmentType(event.target.value)} aria-label="Tipo de equipo">
-                        <option value="">Selecciona el tipo de equipo</option>
-                        <option>PC de escritorio</option>
-                        <option>Laptop</option>
-                        <option>Tablet</option>
-                        <option>Monitor</option>
-                      </select>
-
-                     
-                      <select value={newEquipmentArea} onChange={(event) => setNewEquipmentArea(event.target.value)} aria-label="Área asignada" required>
-                        <option value="">Selecciona un área</option>
-                        <option>Almacén</option>
-                        <option>Calidad</option>
-                        <option>Comercial</option>
-                        <option>Compras</option>
-                        <option>Finanzas</option>
-                        <option>Mantenimiento</option>
-                        <option>Moldes</option>
-                        <option>Producción</option>
-                        <option>Recursos Humanos</option>
-                        <option>Sistemas</option>
-                      </select>
-
-
-
-
-                      <button type="submit" className="equipment-form-submit">Guardar equipo</button>
+                      <div className="equipment-form-header">
+                        <div>
+                          <span className="chart-kicker">Nuevo registro</span>
+                          <h3>Información del equipo</h3>
+                        </div>
+                        <span className="equipment-form-required">* Campos obligatorios</span>
+                      </div>
+                      <div className="equipment-form-fields">
+                        <label className="equipment-form-field">
+                          <span>Nombre o modelo <b>*</b></span>
+                          <input value={newEquipmentName} onChange={(event) => setNewEquipmentName(event.target.value)} placeholder="Ej. Dell Opti 7090" required />
+                        </label>
+                        <label className="equipment-form-field">
+                          <span>Tipo de equipo <b>*</b></span>
+                          <select value={newEquipmentType} onChange={(event) => setNewEquipmentType(event.target.value)} required>
+                            <option>PC de escritorio</option>
+                            <option>Laptop</option>
+                            <option>Tablet</option>
+                            <option>Monitor</option>
+                          </select>
+                        </label>
+                        <label className="equipment-form-field">
+                          <span>Área asignada <b>*</b></span>
+                          <select value={newEquipmentArea} onChange={(event) => setNewEquipmentArea(event.target.value)} required>
+                            <option value="">Selecciona un área</option>
+                            <option>Almacén</option>
+                            <option>Calidad</option>
+                            <option>Comercial</option>
+                            <option>Compras</option>
+                            <option>Finanzas</option>
+                            <option>Mantenimiento</option>
+                            <option>Moldes</option>
+                            <option>Producción</option>
+                            <option>Recursos Humanos</option>
+                            <option>Sistemas</option>
+                          </select>
+                        </label>
+                      </div>
+                      <div className="equipment-spec-form-fields">
+                        <div className="equipment-spec-heading">
+                          <div>
+                            <span className="chart-kicker">Ficha técnica</span>
+                            <p>Especificaciones del equipo</p>
+                          </div>
+                          <span>{newEquipmentType}</span>
+                        </div>
+                        {specFields.map((field) => (
+                          <label className="equipment-form-field" key={field}>
+                            <span>{field} <b>*</b></span>
+                            <input
+                              value={newEquipmentSpecs[field] || ''}
+                              onChange={(event) => setNewEquipmentSpecs((currentSpecs) => ({ ...currentSpecs, [field]: event.target.value }))}
+                              placeholder={`Escribe ${field.toLowerCase()}`}
+                              required
+                            />
+                          </label>
+                        ))}
+                      </div>
+                      <div className="equipment-form-footer">
+                        <p>El equipo se registrará inicialmente con estado <strong>Disponible</strong>.</p>
+                        <button type="submit" className="equipment-form-submit"><Plus /> Guardar equipo</button>
+                      </div>
                     </form>
+                    
                   )}
                   {!selectedEquipmentId && <p className="equipment-action-help">Selecciona una ficha para habilitar la baja del equipo.</p>}
                 </section>
