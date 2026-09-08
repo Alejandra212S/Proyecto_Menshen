@@ -44,13 +44,10 @@ const inventoryData = {
   },
   licencias: {
     title: "Software y Licencias",
-    desc: "Gestión de licencias de Software.",
+    desc: "Consulta y administra el software utilizado, sus licencias y fechas de renovación.",
      icon: <AlertTriangle className="w-4-h-412/" />,
     content: [
-      //{ name: "Total Licencias", desc: "Tipo de licencia: | Asignado a: Juan Pérez" },
-      //{ name: "En uso", desc: "100" },
-      //{ name: "Disponibles", desc: "50" },
-      //{ name: "Licencias próximas a vencer", desc: "Licencias adquiridas" }
+
     ]
   },
   noFuncionales: {
@@ -58,8 +55,7 @@ const inventoryData = {
     desc: "Para agregar un equipo con defectos debes de tomar una foto del equipo y subirla al sistema",
      icon: <Mouse className="w-4-h-412/" />,
     content: [
-      //{ name: "Monitor Dell UltraSharp 24\"", desc: "Falla: Panel quemado | Estatus: Diagnosticado para baja" },
-      //{ name: "Impresora Epson EcoTank L3150", desc: "Falla: Cabezal obstruido | Estatus: Pendiente de repuesto" }
+ 
     ]
   },
   porArea: {
@@ -131,13 +127,22 @@ function InventorySystem() {
   const [newEquipmentType, setNewEquipmentType] = useState('PC de escritorio');
   const [newEquipmentArea, setNewEquipmentArea] = useState('');
   const [newEquipmentSpecs, setNewEquipmentSpecs] = useState({});
+  const [softwareList, setSoftwareList] = useState(inventoryData.licencias.content);
+  const [softwareSearch, setSoftwareSearch] = useState('');
+  const [selectedSoftwareId, setSelectedSoftwareId] = useState(null);
+  const [showSoftwareForm, setShowSoftwareForm] = useState(false);
+  const [newSoftware, setNewSoftware] = useState({ name: '', type: 'Suscripción', version: '', provider: '', area: '', expiration: '' });
   const isHome = activeTab === 'inicio';
   const specFields = newEquipmentType === 'Monitor'
     ? ['Pantalla', 'Resolución', 'Conexiones', 'Asignado a']
-    : ['Procesador', 'Memoria RAM',, 'Sistema'];
+    : ['Procesador', 'Memoria RAM', 'Almacenamiento', 'Sistema'];
   const visibleEquipment = equipmentList.filter((item) => {
     const searchableText = `${item.id} ${item.name} ${item.type} ${item.area}`.toLowerCase();
     return searchableText.includes(equipmentSearch.toLowerCase());
+  });
+  const visibleSoftware = softwareList.filter((item) => {
+    const searchableText = `${item.id} ${item.name} ${item.type} ${item.version} ${item.provider} ${item.area}`.toLowerCase();
+    return searchableText.includes(softwareSearch.toLowerCase());
   });
 
   const handleAddEquipment = (event) => {
@@ -161,10 +166,41 @@ function InventorySystem() {
     setSelectedEquipmentId(newEquipment.id);
   };
 
-  const handleRetireEquipment = () => {
-    if (!selectedEquipmentId) return;
-    setEquipmentList((currentEquipment) => currentEquipment.filter((item) => item.id !== selectedEquipmentId));
+  const handleRetireEquipment = (equipmentId = selectedEquipmentId) => {
+    if (!equipmentId) return;
+    setEquipmentList((currentEquipment) => currentEquipment.filter((item) => item.id !== equipmentId));
     setSelectedEquipmentId(null);
+  };
+
+  const handleSoftwareChange = (field, value) => {
+    setNewSoftware((currentSoftware) => ({ ...currentSoftware, [field]: value }));
+  };
+
+  const handleAddSoftware = (event) => {
+    event.preventDefault();
+    if (!newSoftware.name.trim()) return;
+
+    const software = {
+      id: `SW-${String(softwareList.length + 1).padStart(3, '0')}`,
+      name: newSoftware.name.trim(),
+      type: newSoftware.type,
+      version: newSoftware.version.trim(),
+      provider: newSoftware.provider.trim(),
+      area: newSoftware.area,
+      expiration: newSoftware.expiration,
+      status: newSoftware.expiration && newSoftware.expiration < new Date().toISOString().slice(0, 10) ? 'Vencida' : 'Vigente'
+    };
+
+    setSoftwareList((currentSoftware) => [...currentSoftware, software]);
+    setNewSoftware({ name: '', type: 'Suscripción', version: '', provider: '', area: '', expiration: '' });
+    setShowSoftwareForm(false);
+    setSelectedSoftwareId(software.id);
+  };
+
+  const handleRetireSoftware = (softwareId = selectedSoftwareId) => {
+    if (!softwareId) return;
+    setSoftwareList((currentSoftware) => currentSoftware.filter((item) => item.id !== softwareId));
+    setSelectedSoftwareId(null);
   };
 
   return (
@@ -256,6 +292,11 @@ function InventorySystem() {
               </div>
             </section>
           ) : (
+
+
+
+
+
             <>
               {activeTab === 'computadoras' && (
                 <section className="equipment-actions" aria-label="Acciones del inventario de equipos">
@@ -280,9 +321,6 @@ function InventorySystem() {
                     <button type="button" className="equipment-action-button button-primary" onClick={() => setShowEquipmentForm((isOpen) => !isOpen)}>
                       <Plus /> Agregar equipo
                     </button>
-                    <button type="button" className="equipment-action-button button-danger" onClick={handleRetireEquipment} disabled={!selectedEquipmentId}>
-                      <Archive /> Dar de baja
-                    </button>
                   </div>
                   {showEquipmentForm && (
                     <form className="equipment-form" onSubmit={handleAddEquipment}>
@@ -301,7 +339,7 @@ function InventorySystem() {
                         <label className="equipment-form-field">
                           <span>Tipo de equipo <b>*</b></span>
                           <select value={newEquipmentType} onChange={(event) => setNewEquipmentType(event.target.value)} required>
-                            <option>PC de escritorio</option>
+                            <option>Selecciona una opción</option>
                             <option>Laptop</option>
                             <option>Tablet</option>
                             <option>Monitor</option>
@@ -338,7 +376,7 @@ function InventorySystem() {
                             <input
                               value={newEquipmentSpecs[field] || ''}
                               onChange={(event) => setNewEquipmentSpecs((currentSpecs) => ({ ...currentSpecs, [field]: event.target.value }))}
-                              placeholder={`Escribe ${field.toLowerCase()}`}
+                              placeholder={`${field.toLowerCase()}`}
                               required
                             />
                           </label>
@@ -351,12 +389,98 @@ function InventorySystem() {
                     </form>
                     
                   )}
-                  {!selectedEquipmentId && <p className="equipment-action-help">Selecciona una ficha para habilitar la baja del equipo.</p>}
                 </section>
               )}
-              <div className={`grid gap-4 md:grid-cols-2 ${activeTab === 'computadoras' ? 'equipment-grid' : ''}`}>
-              {(activeTab === 'computadoras' ? visibleEquipment : inventoryData[activeTab].content).map((item, index) => (
-                <div key={item.id || `${item.name}-${index}`} onClick={() => item.specs && setSelectedEquipmentId(item.id)} className={`p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow ${item.specs ? 'equipment-card' : ''} ${selectedEquipmentId === item.id ? 'equipment-card-selected' : ''}`}>
+              {activeTab === 'licencias' && (
+                <section className="equipment-actions" aria-label="Acciones del inventario de software y licencias">
+                  <div className="equipment-action-heading">
+                    <div>
+                      <span className="chart-kicker">Inventario de software</span>
+                      <h2>Licencias registradas</h2>
+                    </div>
+                    <span className="equipment-count">{visibleSoftware.length} licencias</span>
+                  </div>
+                  <div className="equipment-action-row">
+                    <label className="equipment-search">
+                      <Search />
+                      <span className="sr-only">Buscar software</span>
+                      <input
+                        type="search"
+                        value={softwareSearch}
+                        onChange={(event) => setSoftwareSearch(event.target.value)}
+                        placeholder="Buscar por nombre, versión, proveedor o área"
+                      />
+                    </label>
+                    <button type="button" className="equipment-action-button button-primary" onClick={() => setShowSoftwareForm((isOpen) => !isOpen)}>
+                      <Plus /> Agregar licencia
+                    </button>
+                  </div>
+                  {showSoftwareForm && (
+                    <form className="equipment-form" onSubmit={handleAddSoftware}>
+                      <div className="equipment-form-header">
+                        <div>
+                          <span className="chart-kicker">Nuevo registro</span>
+                          <h3>Información de la licencia</h3>
+                        </div>
+                        <span className="equipment-form-required">* Campos obligatorios</span>
+                      </div>
+                      <div className="equipment-form-fields">
+                        <label className="equipment-form-field">
+                          <span>Nombre del software <b>*</b></span>
+                          <input value={newSoftware.name} onChange={(event) => handleSoftwareChange('name', event.target.value)} placeholder="Ej. Microsoft 365" required />
+                        </label>
+                        <label className="equipment-form-field">
+                          <span>Tipo de licencia <b>*</b></span>
+                          <select value={newSoftware.type} onChange={(event) => handleSoftwareChange('type', event.target.value)} required>
+                            <option>Suscripción</option>
+                            <option>Perpetua</option>
+                            <option>Open source</option>
+                            <option>Prueba</option>
+                          </select>
+                        </label>
+                        <label className="equipment-form-field">
+                          <span>Versión <b>*</b></span>
+                          <input value={newSoftware.version} onChange={(event) => handleSoftwareChange('version', event.target.value)} placeholder="Ej. 2026" required />
+                        </label>
+                        <label className="equipment-form-field">
+                          <span>Proveedor <b>*</b></span>
+                          <input value={newSoftware.provider} onChange={(event) => handleSoftwareChange('provider', event.target.value)} placeholder="Ej. Microsoft" required />
+                        </label>
+                        <label className="equipment-form-field">
+                          <span>Área asignada <b>*</b></span>
+                          <select value={newSoftware.area} onChange={(event) => handleSoftwareChange('area', event.target.value)} required>
+                            <option value="">Selecciona un área</option>
+                            <option>Almacén</option>
+                            <option>Calidad</option>
+                            <option>Comercial</option>
+                            <option>Compras</option>
+                            <option>Finanzas</option>
+                            <option>Mantenimiento</option>
+                            <option>Producción</option>
+                            <option>Recursos Humanos</option>
+                            <option>Sistemas</option>
+                          </select>
+                        </label>
+                        <label className="equipment-form-field">
+                          <span>Fecha de vencimiento</span>
+                          <input type="date" value={newSoftware.expiration} onChange={(event) => handleSoftwareChange('expiration', event.target.value)} />
+                        </label>
+                      </div>
+                      <div className="equipment-form-footer">
+                        <p>La licencia se registrará inicialmente con estado <strong>Vigente</strong>.</p>
+                        <button type="submit" className="equipment-form-submit"><Plus /> Guardar licencia</button>
+                      </div>
+                    </form>
+                  )}
+                </section>
+              )}
+              <div className={`grid gap-4 md:grid-cols-2 ${activeTab === 'computadoras' ? 'equipment-grid' : ''} ${activeTab === 'licencias' ? 'software-grid' : ''}`}>
+              {(activeTab === 'computadoras' ? visibleEquipment : activeTab === 'licencias' ? visibleSoftware : inventoryData[activeTab].content).map((item, index) => (
+                <div
+                  key={item.id || `${item.name}-${index}`}
+                  onClick={() => item.specs ? setSelectedEquipmentId(item.id) : item.expiration !== undefined && setSelectedSoftwareId(item.id)}
+                  className={`p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow ${item.specs || item.expiration !== undefined ? 'equipment-card' : ''} ${selectedEquipmentId === item.id || selectedSoftwareId === item.id ? 'equipment-card-selected' : ''}`}
+                >
                   <div className="text-xs font-semibold text-blue-600 mb-1">{item.id}</div>
                   <div className="equipment-card-heading">
                     <div>
@@ -373,6 +497,21 @@ function InventorySystem() {
                           <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
                         ))}
                       </dl>
+                      <button type="button" className="equipment-delete-button" onClick={(event) => { event.stopPropagation(); handleRetireEquipment(item.id); }}>
+                        Eliminar equipo
+                      </button>
+                    </>
+                  ) : item.expiration !== undefined ? (
+                    <>
+                      <div className="equipment-meta"><span>Área</span><strong>{item.area}</strong></div>
+                      <dl className="equipment-specs">
+                        <div><dt>Proveedor</dt><dd>{item.provider}</dd></div>
+                        <div><dt>Versión</dt><dd>{item.version}</dd></div>
+                        <div><dt>Vencimiento</dt><dd>{item.expiration || 'Sin vencimiento'}</dd></div>
+                      </dl>
+                      <button type="button" className="license-delete-button" onClick={(event) => { event.stopPropagation(); handleRetireSoftware(item.id); }}>
+                        Eliminar licencia
+                      </button>
                     </>
                   ) : <p className="text-sm text-gray-600">{item.desc}</p>}
                 </div>
@@ -400,8 +539,12 @@ function InventorySystem() {
         </div>
       </nav>
     </div>
+
+    
   );
+  
 }
+
 
 const rootElement = document.getElementById('root');
 if (ReactDOM.createRoot) {
@@ -409,3 +552,4 @@ if (ReactDOM.createRoot) {
 } else {
   ReactDOM.render(<InventorySystem />, rootElement);
 }
+ 
