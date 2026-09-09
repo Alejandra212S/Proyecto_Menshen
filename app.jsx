@@ -27,10 +27,10 @@ const inventoryData = {
       { label:"Disponibles", tone :"gray"}
     ],
     content: [
-      { id: "inicio-01", name: "Panel General de Equipos", desc: "Total de equipos:  | Activos:  | Con defectos: " },
-      { id: "inicio-02", name: "Telefonia", desc: "Total de equipos:  | En uso: " },
-      { id: "inicio-03", name: "Tipo de Equipos", desc: "Total de equipos: o | Activos:  | Con defectos: " },
-      { id: "inicio-04", name: "Impresoras", desc: "Reporte de toners, cartuchos y mantenimiento" }
+      {  name: "Panel General de Equipos", desc: "Total de equipos:  | Activos:  | Con defectos: " },
+      {  name: "Telefonia", desc: "Total de equipos:  | En uso: " },
+      {  name: "Tipo de Equipos", desc: "Total de equipos: o | Activos:  | Con defectos: " },
+      {  name: "Impresoras", desc: "Reporte de toners, cartuchos y mantenimiento" }
     ]
   },
   computadoras: {
@@ -432,7 +432,8 @@ function InventorySystem() {
                         <label className="equipment-form-field">
                           <span>Tipo de licencia <b>*</b></span>
                           <select value={newSoftware.type} onChange={(event) => handleSoftwareChange('type', event.target.value)} required>
-                            <option>Suscripción</option>
+                            <option>Selecciona una opción</option>
+                             <option>Suscripción</option>
                             <option>Perpetua</option>
                             <option>Open source</option>
                             <option>Prueba</option>
