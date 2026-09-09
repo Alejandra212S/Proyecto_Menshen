@@ -12,22 +12,14 @@
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="bg-slate-100 text-slate-800">
     <div id="root"></div>
 
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-      import {
-        getFirestore,
-        collection,
-        getDocs,
-        setDoc,
-        deleteDoc,
-        doc,
-      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
+    <script>
       const firebaseConfig = {
         apiKey: "AIzaSyBmr2jNfh21fTJ9v9m9wDFk7RzlvFIfnWQ",
         authDomain: "mantenimiento-menshen.firebaseapp.com",
@@ -38,9 +30,16 @@
         measurementId: "G-JQD0FNNV6E",
       };
 
-      const app = initializeApp(firebaseConfig);
-      window.db = getFirestore(app);
-      window.firestoreApi = { collection, getDocs, setDoc, deleteDoc, doc };
+      firebase.initializeApp(firebaseConfig);
+      window.db = firebase.firestore();
+      window.firestoreApi = {
+        collection: (database, path) => database.collection(path),
+        getDocs: (reference) => reference.get(),
+        getDoc: (reference) => reference.get(),
+        setDoc: (reference, data) => reference.set(data),
+        deleteDoc: (reference) => reference.delete(),
+        doc: (database, collectionName, documentId) => database.collection(collectionName).doc(documentId),
+      };
     </script>
 
     <footer class="bg-slate-800 text-slate-200 py-4 mt-8">
@@ -50,7 +49,7 @@
       </div>
     </footer>
 
-    <script type="text/babel" src="inventory-components.jsx"></script>
-    <script type="text/babel" src="app.jsx"></script>
+    <script type="text/babel" src="inventory-components.jsx?v=3"></script>
+    <script type="text/babel" src="app.jsx?v=3"></script>
   </body>
 </html>

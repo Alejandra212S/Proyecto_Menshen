@@ -1275,6 +1275,41 @@ body {
   box-shadow: 0 8px 24px rgba(20, 36, 59, 0.16);
 }
 
+.firebase-status {
+  position: fixed;
+  top: 86px;
+  right: 1.25rem;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.7rem;
+  color: #166534;
+  background: rgba(240, 253, 244, 0.94);
+  border: 1px solid #bbf7d0;
+  border-radius: 999px;
+  box-shadow: var(--shadow-sm);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.firebase-status-error {
+  color: #b42318;
+  background: rgba(255, 245, 244, 0.96);
+  border-color: #fecaca;
+}
+
+.firebase-status-dot {
+  width: 7px;
+  height: 7px;
+  background: #22c55e;
+  border-radius: 50%;
+}
+
+.firebase-status-error .firebase-status-dot {
+  background: #ef4444;
+}
+
 #root > div > header.bg-blue-600 h1 {
   margin: 0;
   font-size: 1.05rem;
@@ -1437,6 +1472,15 @@ nav button.bg-gray-100::before {
   .equipment-actions {
     padding: 1rem;
   }
+
+  .firebase-status {
+    top: 72px;
+    right: 1rem;
+    max-width: calc(100vw - 2rem);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
 
@@ -1449,6 +1493,93 @@ nav button.bg-gray-100::before {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+.toner-panel {
+  display: grid;
+  gap: 0.72rem;
+  padding: 0.9rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.toner-row {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr) 38px;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.7rem;
+}
+
+.toner-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #475569;
+  font-weight: 700;
+}
+
+.toner-label i {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+}
+
+.toner-track {
+  height: 9px;
+  overflow: hidden;
+  background: #e2e8f0;
+  border-radius: 999px;
+}
+
+.toner-fill {
+  display: block;
+  height: 100%;
+  min-width: 2px;
+  border-radius: inherit;
+  transition: width 0.35s ease;
+}
+
+.toner-row strong {
+  color: #1e293b;
+  font-size: 0.7rem;
+  text-align: right;
+}
+
+.printer-meta-line {
+  color: #64748b;
+  font-size: 0.72rem;
+}
+
+.printer-meta-line strong {
+  color: #1e293b;
+}
+
+.printer-print-button {
+  width: 100%;
+  padding: 0.62rem 0.8rem;
+  color: #075985;
+  background: #e0f2fe;
+  border: 1px solid #bae6fd;
+  border-radius: 7px;
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.printer-print-button:hover {
+  color: #fff;
+  background: #0284c7;
+}
+
+@media (max-width: 768px) {
+  .toner-row {
+    grid-template-columns: 76px minmax(0, 1fr) 36px;
   }
 }
 

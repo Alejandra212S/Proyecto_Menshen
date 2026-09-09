@@ -5,6 +5,7 @@ const firestoreApi = window.firestoreApi || {};
 const {
   collection: firestoreCollection,
   getDocs: firestoreGetDocs,
+  getDoc: firestoreGetDoc,
   setDoc: firestoreSetDoc,
   deleteDoc: firestoreDeleteDoc,
   doc: firestoreDoc,
@@ -127,6 +128,90 @@ const inventoryData = {
   }
 };
 
+const genericSectionConfig = {
+  noFuncionales: {
+    collection: 'defectuosos',
+    label: 'Equipo defectuoso',
+    fields: [
+      { key: 'name', label: 'Nombre o modelo', placeholder: 'Ej. HP ProBook', required: true },
+      { key: 'type', label: 'Tipo de equipo', type: 'select', options: ['Laptop', 'PC de escritorio', 'Monitor', 'Tablet', 'Impresora'] },
+      { key: 'area', label: 'Área asignada', placeholder: 'Ej. Producción' },
+      { key: 'problem', label: 'Falla reportada', placeholder: 'Ej. No enciende', required: true },
+      { key: 'priority', label: 'Prioridad', type: 'select', options: ['Alta', 'Media', 'Baja'] },
+      { key: 'notes', label: 'Notas', placeholder: 'Observaciones adicionales' },
+    ],
+  },
+  porArea: {
+    collection: 'equiposPorArea',
+    label: 'Equipo por área',
+    fields: [
+      { key: 'name', label: 'Nombre o modelo', placeholder: 'Ej. Dell OptiPlex', required: true },
+      { key: 'type', label: 'Tipo de equipo', type: 'select', options: ['Laptop', 'PC de escritorio', 'Monitor', 'Tablet', 'Impresora'] },
+      { key: 'area', label: 'Área', placeholder: 'Ej. Calidad', required: true },
+      { key: 'assignedTo', label: 'Responsable', placeholder: 'Nombre del responsable' },
+      { key: 'status', label: 'Estado', type: 'select', options: ['Disponible', 'En uso', 'Operativo'] },
+    ],
+  },
+  Impresoras: {
+    collection: 'impresoras',
+    label: 'Impresora o toner',
+    fields: [
+      { key: 'name', label: 'Nombre o modelo', placeholder: 'Ej. HP LaserJet Pro', required: true },
+      { key: 'type', label: 'Tipo', type: 'select', options: ['Impresora', 'Multifuncional', 'Toner', 'Cartucho'] },
+      { key: 'area', label: 'Área asignada', placeholder: 'Ej. Almacén' },
+      { key: 'serial', label: 'Número de serie', placeholder: 'Número de serie' },
+      { key: 'status', label: 'Estado', type: 'select', options: ['Disponible', 'En uso', 'Mantenimiento', 'Agotado'] },
+      { key: 'tonerMagenta', label: 'Tóner magenta (%)', type: 'number', placeholder: '100', required: true },
+      { key: 'tonerBlack', label: 'Tóner negro (%)', type: 'number', placeholder: '100', required: true },
+      { key: 'tonerCyan', label: 'Tóner cian (%)', type: 'number', placeholder: '100', required: true },
+      { key: 'tonerYellow', label: 'Tóner amarillo (%)', type: 'number', placeholder: '100', required: true },
+    ],
+  },
+  Telefonia: {
+    collection: 'telefonia',
+    label: 'Dispositivo de telefonía',
+    fields: [
+      { key: 'name', label: 'Dispositivo o modelo', placeholder: 'Ej. iPhone 15', required: true },
+      { key: 'type', label: 'Tipo', type: 'select', options: ['Celular', 'Teléfono fijo', 'Radio', 'Accesorio'] },
+      { key: 'area', label: 'Área asignada', placeholder: 'Ej. Sistemas' },
+      { key: 'assignedTo', label: 'Asignado a', placeholder: 'Nombre del usuario' },
+      { key: 'status', label: 'Estado', type: 'select', options: ['Disponible', 'En uso', 'Baja'] },
+    ],
+  },
+  Poliza: {
+    collection: 'polizas',
+    label: 'Póliza de soporte',
+    fields: [
+      { key: 'name', label: 'Servicio o proveedor', placeholder: 'Ej. Soporte Microsoft', required: true },
+      { key: 'type', label: 'Tipo de soporte', type: 'select', options: ['Hardware', 'Software', 'Redes', 'Mantenimiento'] },
+      { key: 'provider', label: 'Proveedor', placeholder: 'Nombre del proveedor' },
+      { key: 'expiration', label: 'Fecha de vencimiento', type: 'date' },
+      { key: 'status', label: 'Estado', type: 'select', options: ['Vigente', 'Por vencer', 'Vencida'] },
+    ],
+  },
+  Articulos: {
+    collection: 'articulos',
+    label: 'Artículo de inventario',
+    fields: [
+      { key: 'name', label: 'Nombre del artículo', placeholder: 'Ej. Teclado USB', required: true },
+      { key: 'type', label: 'Categoría', type: 'select', options: ['Accesorio', 'Consumible', 'Mobiliario', 'Refacción'] },
+      { key: 'area', label: 'Área', placeholder: 'Ej. Mantenimiento' },
+      { key: 'quantity', label: 'Cantidad', type: 'number', placeholder: '0' },
+      { key: 'status', label: 'Estado', type: 'select', options: ['Disponible', 'Asignado', 'Agotado'] },
+    ],
+  },
+  Configuración: {
+    collection: 'configuracion',
+    label: 'Configuración del sistema',
+    fields: [
+      { key: 'name', label: 'Nombre de la configuración', placeholder: 'Ej. Correo de soporte', required: true },
+      { key: 'type', label: 'Tipo', type: 'select', options: ['General', 'Notificaciones', 'Mantenimiento', 'Seguridad'] },
+      { key: 'value', label: 'Valor', placeholder: 'Valor de la configuración', required: true },
+      { key: 'notes', label: 'Descripción', placeholder: 'Notas de configuración' },
+    ],
+  },
+};
+
 function InventorySystem() {
   const [activeTab, setActiveTab] = useState('inicio');
   const [equipmentList, setEquipmentList] = useState([]);
@@ -137,11 +222,20 @@ function InventorySystem() {
   const [newEquipmentType, setNewEquipmentType] = useState('PC de escritorio');
   const [newEquipmentArea, setNewEquipmentArea] = useState('');
   const [newEquipmentSpecs, setNewEquipmentSpecs] = useState({});
+  const [recoveredList, setRecoveredList] = useState([]);
+  const [recoveredSearch, setRecoveredSearch] = useState('');
+  const [showRecoveredForm, setShowRecoveredForm] = useState(false);
+  const [newRecovered, setNewRecovered] = useState({ name: '', type: 'Laptop', area: '', action: 'Reparado', condition: 'Operativo', notes: '' });
   const [softwareList, setSoftwareList] = useState([]);
   const [softwareSearch, setSoftwareSearch] = useState('');
   const [selectedSoftwareId, setSelectedSoftwareId] = useState(null);
   const [showSoftwareForm, setShowSoftwareForm] = useState(false);
   const [newSoftware, setNewSoftware] = useState({ name: '', type: 'Suscripción', version: '', provider: '', area: '', expiration: '' });
+  const [genericLists, setGenericLists] = useState({});
+  const [genericSearch, setGenericSearch] = useState('');
+  const [showGenericForm, setShowGenericForm] = useState(false);
+  const [genericForm, setGenericForm] = useState({});
+  const [firebaseStatus, setFirebaseStatus] = useState('Conectando con Firebase...');
   const isHome = activeTab === 'inicio';
   const specFields = newEquipmentType === 'Monitor'
     ? ['Pantalla', 'Resolución', 'Conexiones', 'Asignado a']
@@ -153,6 +247,16 @@ function InventorySystem() {
   const visibleSoftware = softwareList.filter((item) => {
     const searchableText = `${item.id} ${item.name} ${item.type} ${item.version} ${item.provider} ${item.area}`.toLowerCase();
     return searchableText.includes(softwareSearch.toLowerCase());
+  });
+  const visibleRecovered = recoveredList.filter((item) => {
+    const searchableText = `${item.id} ${item.name} ${item.type} ${item.area} ${item.action}`.toLowerCase();
+    return searchableText.includes(recoveredSearch.toLowerCase());
+  });
+  const activeGenericConfig = genericSectionConfig[activeTab];
+  const activeGenericList = activeGenericConfig ? (genericLists[activeTab] || []) : [];
+  const visibleGeneric = activeGenericList.filter((item) => {
+    const searchableText = Object.values(item).join(' ').toLowerCase();
+    return searchableText.includes(genericSearch.toLowerCase());
   });
   const totalEquipment = equipmentList.length;
   const availableEquipment = equipmentList.filter((item) => item.status === 'Disponible').length;
@@ -174,7 +278,12 @@ function InventorySystem() {
 
   useEffect(() => {
     const cargarDesdeFirebase = async () => {
-      if (!db || !firestoreGetDocs || !firestoreCollection) return;
+      if (!db || !firestoreGetDocs || !firestoreCollection) {
+        setFirebaseStatus('Firebase no está disponible');
+        return;
+      }
+
+      setFirebaseStatus('Firebase listo; cargando datos...');
 
       try {
         const equiposSnapshot = await firestoreGetDocs(firestoreCollection(db, 'equipos'));
@@ -186,24 +295,68 @@ function InventorySystem() {
             name: data.name || data.nombre || '',
             type: data.type || data.tipo || '',
             status: data.status || data.Estado || data.estado || 'Disponible',
+            specs: data.specs || {
+              Procesador: data.Procesador || data.procesador || '',
+              'Memoria RAM': data['Memoria RAM'] || data.memoriaRAM || '',
+              Almacenamiento: data.Almacenamiento || data.almacenamiento || '',
+              Sistema: data.Sistema || data.sistema || '',
+            },
           };
         });
         setEquipmentList(equipos);
 
-        const licenciasSnapshot = await firestoreGetDocs(firestoreCollection(db, 'licencias'));
+        const licenciasSnapshot = await firestoreGetDocs(firestoreCollection(db, 'Licencias'));
         const licencias = licenciasSnapshot.docs.map((docSnap) => {
+          const data = docSnap.data();
+          return {
+            id: docSnap.id,
+            ...data,
+            name: data.name || data.nombre || data.Nombre || '',
+            type: data.type || data.tipo || data.Tipo || '',
+            status: data.status || data.Estado || data.estado || 'Vigente',
+            provider: data.provider || data.Proveedor || data.proveedor || data['asignado a'] || '',
+            expiration: data.expiration || data['Fecha de vencimiento'] || data['fecha de vencimiento'] || '',
+            area: data.area || data.Área || data['Área asignada'] || '',
+          };
+        });
+        setSoftwareList(licencias);
+
+        const recuperadosSnapshot = await firestoreGetDocs(firestoreCollection(db, 'recuperados'));
+        const recuperados = recuperadosSnapshot.docs.map((docSnap) => {
           const data = docSnap.data();
           return {
             id: docSnap.id,
             ...data,
             name: data.name || data.nombre || '',
             type: data.type || data.tipo || '',
-            status: data.status || data.Estado || data.estado || 'Vigente',
+            condition: data.condition || data.condicion || 'Operativo',
           };
         });
-        setSoftwareList(licencias);
+        setRecoveredList(recuperados);
+
+        const genericEntries = await Promise.all(Object.entries(genericSectionConfig).map(async ([sectionKey, config]) => {
+          const snapshot = await firestoreGetDocs(firestoreCollection(db, config.collection));
+          const records = snapshot.docs.map((docSnap) => {
+            const data = docSnap.data();
+            if (sectionKey !== 'Impresoras') return { id: docSnap.id, ...data };
+            return {
+              id: docSnap.id,
+              ...data,
+              toner: data.toner || {
+                magenta: Number(data.tonerMagenta ?? 0),
+                negro: Number(data.tonerBlack ?? 0),
+                cian: Number(data.tonerCyan ?? 0),
+                amarillo: Number(data.tonerYellow ?? 0),
+              },
+            };
+          });
+          return [sectionKey, records];
+        }));
+        setGenericLists(Object.fromEntries(genericEntries));
+        setFirebaseStatus('Firebase conectado');
       } catch (error) {
         console.error('Error al conectar Firebase:', error);
+        setFirebaseStatus(`Error de Firebase: ${error?.code || error?.message || 'desconocido'}`);
         alert('No se pudo conectar Firebase. Revisa tu configuración.');
       }
     };
@@ -213,7 +366,15 @@ function InventorySystem() {
 
   const handleAddEquipment = async (event) => {
     event.preventDefault();
-    if (!newEquipmentName.trim() || !db || !firestoreSetDoc || !firestoreDoc) return;
+    if (!event.currentTarget.checkValidity()) {
+      event.currentTarget.reportValidity();
+      return;
+    }
+    if (!newEquipmentName.trim()) return;
+    if (!db || !firestoreSetDoc || !firestoreDoc) {
+      alert('Firebase no está disponible. Recarga la página con Ctrl + F5.');
+      return;
+    }
 
     const newEquipment = {
       id: `EQ-${String(equipmentList.length + 1).padStart(3, '0')}`,
@@ -221,14 +382,25 @@ function InventorySystem() {
       type: newEquipmentType,
       status: 'Disponible',
       area: newEquipmentArea.trim() || 'Sin asignar',
-      specs: specFields.map((field) => [field, (newEquipmentSpecs[field] || '').trim()])
+      specs: Object.fromEntries(specFields.map((field) => [field, (newEquipmentSpecs[field] || '').trim()]))
+    };
+    const equipmentDocument = {
+      id: newEquipment.id,
+      name: newEquipment.name,
+      type: newEquipment.type,
+      status: newEquipment.status,
+      area: newEquipment.area,
+      ...newEquipment.specs,
+      fechaRegistro: new Date().toISOString(),
     };
 
     try {
-      await firestoreSetDoc(firestoreDoc(db, 'equipos', newEquipment.id), {
-        ...newEquipment,
-        fechaRegistro: new Date().toISOString(),
-      });
+      const equipmentReference = firestoreDoc(db, 'equipos', newEquipment.id);
+      await firestoreSetDoc(equipmentReference, equipmentDocument);
+      const savedEquipment = firestoreGetDoc ? await firestoreGetDoc(equipmentReference) : null;
+      if (savedEquipment && !savedEquipment.exists) {
+        throw new Error('Firestore no confirmó el documento guardado.');
+      }
 
       setEquipmentList((currentEquipment) => [...currentEquipment, newEquipment]);
       setNewEquipmentName('');
@@ -236,10 +408,13 @@ function InventorySystem() {
       setNewEquipmentSpecs({});
       setShowEquipmentForm(false);
       setSelectedEquipmentId(newEquipment.id);
+      setFirebaseStatus(`Equipo ${newEquipment.id} guardado en Firestore`);
     } catch (error) {
       console.error('Error al guardar equipo:', error);
       const detail = error?.code ? ` (${error.code})` : '';
-      alert(`No se pudo guardar el equipo${detail}. Revisa las reglas de Firestore.`);
+      const message = error?.message || 'Error desconocido';
+      setFirebaseStatus(`Error al guardar equipo${detail}`);
+      alert(`No se pudo guardar el equipo${detail}: ${message}`);
     }
   };
 
@@ -256,13 +431,174 @@ function InventorySystem() {
     }
   };
 
+  const handleRecoveredChange = (field, value) => {
+    setNewRecovered((currentRecovered) => ({ ...currentRecovered, [field]: value }));
+  };
+
+  const handleAddRecovered = async (event) => {
+    event.preventDefault();
+    if (!event.currentTarget.checkValidity()) {
+      event.currentTarget.reportValidity();
+      return;
+    }
+    if (!newRecovered.name.trim()) return;
+    if (!db || !firestoreSetDoc || !firestoreDoc) {
+      alert('Firebase no está disponible. Recarga la página con Ctrl + F5.');
+      return;
+    }
+
+    const recovered = {
+      id: `REC-${String(recoveredList.length + 1).padStart(3, '0')}`,
+      name: newRecovered.name.trim(),
+      type: newRecovered.type,
+      area: newRecovered.area.trim() || 'Sin asignar',
+      action: newRecovered.action,
+      condition: newRecovered.condition,
+      notes: newRecovered.notes.trim(),
+      status: 'Recuperado',
+    };
+
+    try {
+      await firestoreSetDoc(firestoreDoc(db, 'recuperados', recovered.id), {
+        ...recovered,
+        fechaRecuperacion: new Date().toISOString(),
+      });
+      setRecoveredList((currentRecovered) => [...currentRecovered, recovered]);
+      setNewRecovered({ name: '', type: 'Laptop', area: '', action: 'Reparado', condition: 'Operativo', notes: '' });
+      setShowRecoveredForm(false);
+      setFirebaseStatus('Equipo recuperado guardado correctamente');
+    } catch (error) {
+      console.error('Error al guardar equipo recuperado:', error);
+      const detail = error?.code ? ` (${error.code})` : '';
+      setFirebaseStatus(`Error al guardar recuperado${detail}`);
+      alert(`No se pudo guardar el equipo recuperado${detail}. Revisa las reglas de Firestore.`);
+    }
+  };
+
+  const handleDeleteRecovered = async (recoveredId) => {
+    if (!recoveredId || !db || !firestoreDeleteDoc || !firestoreDoc) return;
+
+    try {
+      await firestoreDeleteDoc(firestoreDoc(db, 'recuperados', recoveredId));
+      setRecoveredList((currentRecovered) => currentRecovered.filter((item) => item.id !== recoveredId));
+    } catch (error) {
+      console.error('Error al eliminar equipo recuperado:', error);
+      alert('No se pudo eliminar el equipo recuperado.');
+    }
+  };
+
   const handleSoftwareChange = (field, value) => {
     setNewSoftware((currentSoftware) => ({ ...currentSoftware, [field]: value }));
   };
 
+  const handleGenericChange = (field, value) => {
+    setGenericForm((currentForm) => ({ ...currentForm, [field]: value }));
+  };
+
+  const handleAddGeneric = async (event) => {
+    event.preventDefault();
+    if (!event.currentTarget.checkValidity()) {
+      event.currentTarget.reportValidity();
+      return;
+    }
+    if (!activeGenericConfig || !genericForm.name?.trim()) return;
+    if (!db || !firestoreSetDoc || !firestoreDoc) {
+      alert('Firebase no está disponible. Recarga la página con Ctrl + F5.');
+      return;
+    }
+
+    const recordId = `${activeTab.toUpperCase().slice(0, 3)}-${String(activeGenericList.length + 1).padStart(3, '0')}`;
+    const record = {
+      id: recordId,
+      ...genericForm,
+      name: genericForm.name.trim(),
+      status: genericForm.status || 'Activo',
+    };
+    if (activeTab === 'Impresoras') {
+      record.toner = {
+        magenta: Math.max(0, Math.min(100, Number(genericForm.tonerMagenta || 0))),
+        negro: Math.max(0, Math.min(100, Number(genericForm.tonerBlack || 0))),
+        cian: Math.max(0, Math.min(100, Number(genericForm.tonerCyan || 0))),
+        amarillo: Math.max(0, Math.min(100, Number(genericForm.tonerYellow || 0))),
+      };
+    }
+
+    try {
+      await firestoreSetDoc(firestoreDoc(db, activeGenericConfig.collection, recordId), {
+        ...record,
+        fechaRegistro: new Date().toISOString(),
+      });
+      setGenericLists((currentLists) => ({
+        ...currentLists,
+        [activeTab]: [...(currentLists[activeTab] || []), record],
+      }));
+      setGenericForm({});
+      setShowGenericForm(false);
+      setFirebaseStatus('Registro guardado correctamente');
+    } catch (error) {
+      console.error(`Error al guardar registro de ${activeTab}:`, error);
+      const detail = error?.code ? ` (${error.code})` : '';
+      setFirebaseStatus(`Error al guardar registro${detail}`);
+      alert(`No se pudo guardar el registro${detail}. Revisa las reglas de Firestore.`);
+    }
+  };
+
+  const handlePrint = async (printer) => {
+    if (!printer?.id || !db || !firestoreSetDoc || !firestoreDoc) return;
+
+    const currentToner = printer.toner || { magenta: 0, negro: 0, cian: 0, amarillo: 0 };
+    const toner = Object.fromEntries(Object.entries(currentToner).map(([color, level]) => [color, Math.max(0, Number(level || 0) - 1)]));
+    const updatedPrinter = { ...printer, toner };
+    delete updatedPrinter.tonerMagenta;
+    delete updatedPrinter.tonerBlack;
+    delete updatedPrinter.tonerCyan;
+    delete updatedPrinter.tonerYellow;
+
+    try {
+      await firestoreSetDoc(firestoreDoc(db, 'impresoras', printer.id), {
+        ...updatedPrinter,
+        impresiones: Number(printer.impresiones || 0) + 1,
+        ultimaImpresion: new Date().toISOString(),
+      });
+      setGenericLists((currentLists) => ({
+        ...currentLists,
+        Impresoras: (currentLists.Impresoras || []).map((item) => item.id === printer.id ? { ...item, ...updatedPrinter, impresiones: Number(printer.impresiones || 0) + 1 } : item),
+      }));
+      setFirebaseStatus('Impresión registrada y tóner actualizado');
+    } catch (error) {
+      console.error('Error al registrar impresión:', error);
+      const detail = error?.code ? ` (${error.code})` : '';
+      setFirebaseStatus(`Error al registrar impresión${detail}`);
+      alert(`No se pudo registrar la impresión${detail}.`);
+    }
+  };
+
+  const handleDeleteGeneric = async (recordId) => {
+    if (!activeGenericConfig || !recordId || !db || !firestoreDeleteDoc || !firestoreDoc) return;
+
+    try {
+      await firestoreDeleteDoc(firestoreDoc(db, activeGenericConfig.collection, recordId));
+      setGenericLists((currentLists) => ({
+        ...currentLists,
+        [activeTab]: (currentLists[activeTab] || []).filter((item) => item.id !== recordId),
+      }));
+    } catch (error) {
+      console.error(`Error al eliminar registro de ${activeTab}:`, error);
+      alert('No se pudo eliminar el registro.');
+    }
+  };
+
   const handleAddSoftware = async (event) => {
     event.preventDefault();
-    if (!newSoftware.name.trim() || !db || !firestoreSetDoc || !firestoreDoc) return;
+    if (!event.currentTarget.checkValidity()) {
+      event.currentTarget.reportValidity();
+      return;
+    }
+    if (!newSoftware.name.trim()) return;
+    if (!db || !firestoreSetDoc || !firestoreDoc) {
+      alert('Firebase no está disponible. Recarga la página con Ctrl + F5.');
+      return;
+    }
 
     const software = {
       id: `SW-${String(softwareList.length + 1).padStart(3, '0')}`,
@@ -276,7 +612,7 @@ function InventorySystem() {
     };
 
     try {
-      await firestoreSetDoc(firestoreDoc(db, 'licencias', software.id), {
+      await firestoreSetDoc(firestoreDoc(db, 'Licencias', software.id), {
         ...software,
         fechaRegistro: new Date().toISOString(),
       });
@@ -285,9 +621,11 @@ function InventorySystem() {
       setNewSoftware({ name: '', type: 'Suscripción', version: '', provider: '', area: '', expiration: '' });
       setShowSoftwareForm(false);
       setSelectedSoftwareId(software.id);
+      setFirebaseStatus('Licencia guardada correctamente');
     } catch (error) {
       console.error('Error al guardar licencia:', error);
       const detail = error?.code ? ` (${error.code})` : '';
+      setFirebaseStatus(`Error al guardar licencia${detail}`);
       alert(`No se pudo guardar la licencia${detail}. Revisa las reglas de Firestore.`);
     }
   };
@@ -296,7 +634,7 @@ function InventorySystem() {
     if (!softwareId || !db || !firestoreDeleteDoc || !firestoreDoc) return;
 
     try {
-      await firestoreDeleteDoc(firestoreDoc(db, 'licencias', softwareId));
+      await firestoreDeleteDoc(firestoreDoc(db, 'Licencias', softwareId));
       setSoftwareList((currentSoftware) => currentSoftware.filter((item) => item.id !== softwareId));
       setSelectedSoftwareId(null);
     } catch (error) {
@@ -310,6 +648,10 @@ function InventorySystem() {
       <header className="bg-blue-600 px-6 py-4 text-white shadow-md">
         <h1 className="text-2xl font-bold">menshen</h1>
       </header>
+      <div className={`firebase-status ${firebaseStatus.startsWith('Error') || firebaseStatus.includes('no está') ? 'firebase-status-error' : ''}`} role="status">
+        <span className="firebase-status-dot" />
+        {firebaseStatus}
+      </div>
       <main className="flex-1 p-6 overflow-y-auto pt-28 pb-6">
         <div className="max-w-5xl mx-auto">
           <header className="page-header mb-6 border-b pb-4">
@@ -349,7 +691,7 @@ function InventorySystem() {
                   <div className="chart-heading">
                     <div>
                       <span className="chart-kicker">Indicadores</span>
-                      <h3>Estado de los equipos</h3>
+                      <h3>Estados de los equipos</h3>
                     </div>
                     <span className="chart-period">Este mes</span>
                   </div>
@@ -368,7 +710,7 @@ function InventorySystem() {
                   <div className="chart-heading">
                     <div>
                       <span className="chart-kicker">Inventario</span>
-                      <h3>Distribución por tipo</h3>
+                      <h3>Distribución por tipo  </h3>
                     </div>
                   </div>
                   <div className="mix-content">
@@ -577,8 +919,102 @@ function InventorySystem() {
                   )}
                 </section>
               )}
+              {activeTab === 'recuperados' && (
+                <section className="equipment-actions" aria-label="Acciones de equipos recuperados">
+                  <div className="equipment-action-heading">
+                    <div>
+                      <span className="chart-kicker">Historial de recuperación</span>
+                      <h2>Equipos recuperados</h2>
+                    </div>
+                    <span className="equipment-count">{visibleRecovered.length} equipos</span>
+                  </div>
+                  <div className="equipment-action-row">
+                    <label className="equipment-search">
+                      <Search />
+                      <span className="sr-only">Buscar equipos recuperados</span>
+                      <input type="search" value={recoveredSearch} onChange={(event) => setRecoveredSearch(event.target.value)} placeholder="Buscar por nombre, ID, tipo o acción" />
+                    </label>
+                    <button type="button" className="equipment-action-button button-primary" onClick={() => setShowRecoveredForm((isOpen) => !isOpen)}>
+                      <Plus /> Registrar recuperación
+                    </button>
+                  </div>
+                  {showRecoveredForm && (
+                    <form className="equipment-form" onSubmit={handleAddRecovered}>
+                      <div className="equipment-form-header">
+                        <div>
+                          <span className="chart-kicker">Nuevo registro</span>
+                          <h3>Información del equipo recuperado</h3>
+                        </div>
+                        <span className="equipment-form-required">* Campos obligatorios</span>
+                      </div>
+                      <div className="equipment-form-fields recovered-form-fields">
+                        <label className="equipment-form-field"><span>Nombre o modelo <b>*</b></span><input value={newRecovered.name} onChange={(event) => handleRecoveredChange('name', event.target.value)} placeholder="Ej. Lenovo ThinkPad" required /></label>
+                        <label className="equipment-form-field"><span>Tipo <b>*</b></span><select value={newRecovered.type} onChange={(event) => handleRecoveredChange('type', event.target.value)}><option>Laptop</option><option>PC de escritorio</option><option>Monitor</option><option>Tablet</option><option>Impresora</option></select></label>
+                        <label className="equipment-form-field"><span>Área asignada</span><input value={newRecovered.area} onChange={(event) => handleRecoveredChange('area', event.target.value)} placeholder="Ej. Sistemas" /></label>
+                        <label className="equipment-form-field"><span>Acción realizada <b>*</b></span><select value={newRecovered.action} onChange={(event) => handleRecoveredChange('action', event.target.value)}><option>Reparado</option><option>Reasignado</option><option>Vendido</option><option>Donado</option></select></label>
+                        <label className="equipment-form-field"><span>Condición <b>*</b></span><select value={newRecovered.condition} onChange={(event) => handleRecoveredChange('condition', event.target.value)}><option>Operativo</option><option>En observación</option><option>Para refacciones</option></select></label>
+                        <label className="equipment-form-field recovered-notes-field"><span>Notas</span><input value={newRecovered.notes} onChange={(event) => handleRecoveredChange('notes', event.target.value)} placeholder="Describe la recuperación" /></label>
+                      </div>
+                      <div className="equipment-form-footer">
+                        <p>El equipo quedará guardado en la colección <strong>recuperados</strong>.</p>
+                        <button type="submit" className="equipment-form-submit"><Plus /> Guardar recuperación</button>
+                      </div>
+                    </form>
+                  )}
+                </section>
+              )}
+              {activeGenericConfig && (
+                <section className="equipment-actions" aria-label={`Acciones de ${activeGenericConfig.label}`}>
+                  <div className="equipment-action-heading">
+                    <div>
+                      <span className="chart-kicker">Módulo conectado a Firebase</span>
+                      <h2>{activeGenericConfig.label}</h2>
+                    </div>
+                    <span className="equipment-count">{visibleGeneric.length} registros</span>
+                  </div>
+                  <div className="equipment-action-row">
+                    <label className="equipment-search">
+                      <Search />
+                      <span className="sr-only">Buscar registros</span>
+                      <input type="search" value={genericSearch} onChange={(event) => setGenericSearch(event.target.value)} placeholder="Buscar en este apartado" />
+                    </label>
+                    <button type="button" className="equipment-action-button button-primary" onClick={() => setShowGenericForm((isOpen) => !isOpen)}>
+                      <Plus /> Nuevo registro
+                    </button>
+                  </div>
+                  {showGenericForm && (
+                    <form className="equipment-form" onSubmit={handleAddGeneric}>
+                      <div className="equipment-form-header">
+                        <div>
+                          <span className="chart-kicker">Nuevo registro</span>
+                          <h3>{activeGenericConfig.label}</h3>
+                        </div>
+                        <span className="equipment-form-required">* Campos obligatorios</span>
+                      </div>
+                      <div className="equipment-form-fields generic-form-fields">
+                        {activeGenericConfig.fields.map((field) => (
+                          <label className="equipment-form-field" key={field.key}>
+                            <span>{field.label} {field.required && <b>*</b>}</span>
+                            {field.type === 'select' ? (
+                              <select value={genericForm[field.key] || field.options[0]} onChange={(event) => handleGenericChange(field.key, event.target.value)}>
+                                {field.options.map((option) => <option key={option}>{option}</option>)}
+                              </select>
+                            ) : (
+                              <input type={field.type || 'text'} value={genericForm[field.key] || ''} onChange={(event) => handleGenericChange(field.key, event.target.value)} placeholder={field.placeholder} required={field.required} />
+                            )}
+                          </label>
+                        ))}
+                      </div>
+                      <div className="equipment-form-footer">
+                        <p>Los datos se guardarán en <strong>{activeGenericConfig.collection}</strong>.</p>
+                        <button type="submit" className="equipment-form-submit"><Plus /> Guardar registro</button>
+                      </div>
+                    </form>
+                  )}
+                </section>
+              )}
               <div className={`grid gap-4 md:grid-cols-2 ${activeTab === 'computadoras' ? 'equipment-grid' : ''} ${activeTab === 'licencias' ? 'software-grid' : ''}`}>
-                {(activeTab === 'computadoras' ? visibleEquipment : activeTab === 'licencias' ? visibleSoftware : inventoryData[activeTab].content).map((item, index) => (
+                {(activeTab === 'computadoras' ? visibleEquipment : activeTab === 'licencias' ? visibleSoftware : activeTab === 'recuperados' ? visibleRecovered : activeGenericConfig ? visibleGeneric : inventoryData[activeTab].content).map((item, index) => (
                   <InventoryCard
                     key={item.id || `${item.name}-${index}`}
                     item={item}
@@ -589,6 +1025,9 @@ function InventorySystem() {
                     onSelectSoftware={setSelectedSoftwareId}
                     onRetireEquipment={handleRetireEquipment}
                     onRetireSoftware={handleRetireSoftware}
+                    onDeleteRecovered={handleDeleteRecovered}
+                    onDeleteGeneric={handleDeleteGeneric}
+                    onPrint={handlePrint}
                   />
                 ))}
               </div>

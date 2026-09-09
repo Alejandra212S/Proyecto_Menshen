@@ -1,15 +1,18 @@
 /* Componentes visuales de la aplicación. La lógica y el estado permanecen en app.jsx. */
 
-const InventoryCard = ({ item, index, selectedEquipmentId, selectedSoftwareId, onSelectEquipment, onSelectSoftware, onRetireEquipment, onRetireSoftware }) => {
+const InventoryCard = ({ item, index, selectedEquipmentId, selectedSoftwareId, onSelectEquipment, onSelectSoftware, onRetireEquipment, onRetireSoftware, onDeleteRecovered, onDeleteGeneric, onPrint }) => {
   const isEquipment = Boolean(item.specs);
   const isSoftware = item.expiration !== undefined;
+  const isRecovered = item.status === 'Recuperado';
+  const isPrinter = Boolean(item.toner);
+  const isGeneric = Boolean(item.id) && !isEquipment && !isSoftware && !isRecovered;
   const isSelected = selectedEquipmentId === item.id || selectedSoftwareId === item.id;
 
   return (
     <div
       key={item.id || `${item.name}-${index}`}
       onClick={() => isEquipment ? onSelectEquipment(item.id) : isSoftware && onSelectSoftware(item.id)}
-      className={`p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow ${isEquipment || isSoftware ? 'equipment-card' : ''} ${isSelected ? 'equipment-card-selected' : ''}`}
+      className={`p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow ${isEquipment || isSoftware || isRecovered || isPrinter ? 'equipment-card' : ''} ${isSelected ? 'equipment-card-selected' : ''}`}
     >
       <div className="text-xs font-semibold text-blue-600 mb-1">{item.id}</div>
       <div className="equipment-card-heading">
@@ -23,12 +26,24 @@ const InventoryCard = ({ item, index, selectedEquipmentId, selectedSoftwareId, o
         <>
           <div className="equipment-meta"><span>Área</span><strong>{item.area}</strong></div>
           <dl className="equipment-specs">
-            {item.specs.map(([label, value]) => (
+            {(Array.isArray(item.specs) ? item.specs : Object.entries(item.specs || {})).map(([label, value]) => (
               <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
             ))}
           </dl>
           <button type="button" className="equipment-delete-button" onClick={(event) => { event.stopPropagation(); onRetireEquipment(item.id); }}>
             Eliminar equipo
+          </button>
+        </>
+      ) : isRecovered ? (
+        <>
+          <div className="equipment-meta"><span>Área</span><strong>{item.area}</strong></div>
+          <dl className="equipment-specs">
+            <div><dt>Acción</dt><dd>{item.action}</dd></div>
+            <div><dt>Condición</dt><dd>{item.condition}</dd></div>
+            {item.notes && <div><dt>Notas</dt><dd>{item.notes}</dd></div>}
+          </dl>
+          <button type="button" className="license-delete-button" onClick={(event) => { event.stopPropagation(); onDeleteRecovered(item.id); }}>
+            Eliminar registro
           </button>
         </>
       ) : isSoftware ? (
@@ -41,6 +56,47 @@ const InventoryCard = ({ item, index, selectedEquipmentId, selectedSoftwareId, o
           </dl>
           <button type="button" className="license-delete-button" onClick={(event) => { event.stopPropagation(); onRetireSoftware(item.id); }}>
             Eliminar licencia
+          </button>
+        </>
+      ) : isPrinter ? (
+        <>
+          <div className="equipment-meta"><span>Área</span><strong>{item.area || 'Sin asignar'}</strong></div>
+          <div className="toner-panel" aria-label={`Niveles de tóner de ${item.name}`}>
+            {[
+              ['magenta', 'Magenta', '#d946ef'],
+              ['negro', 'Negro', '#1f2937'],
+              ['cian', 'Cian', '#0891b2'],
+              ['amarillo', 'Amarillo', '#eab308'],
+            ].map(([key, label, color]) => {
+              const level = Math.max(0, Math.min(100, Number(item.toner[key] || 0)));
+              return (
+                <div className="toner-row" key={key}>
+                  <span className="toner-label"><i style={{ backgroundColor: color }} />{label}</span>
+                  <div className="toner-track"><span className="toner-fill" style={{ width: `${level}%`, backgroundColor: color }} /></div>
+                  <strong>{level}%</strong>
+                </div>
+              );
+            })}
+          </div>
+          <div className="printer-meta-line">Impresiones registradas: <strong>{item.impresiones || 0}</strong></div>
+          <button type="button" className="printer-print-button" onClick={(event) => { event.stopPropagation(); onPrint(item); }}>
+            Registrar impresión (-1% por color)
+          </button>
+          <button type="button" className="license-delete-button" onClick={(event) => { event.stopPropagation(); onDeleteGeneric(item.id); }}>
+            Eliminar impresora
+          </button>
+        </>
+      ) : isGeneric ? (
+        <>
+          <dl className="equipment-specs">
+            {Object.entries(item)
+              .filter(([key, value]) => !['id', 'name', 'status', 'fechaRegistro'].includes(key) && value !== '' && value !== undefined)
+              .map(([key, value]) => (
+                <div key={key}><dt>{key}</dt><dd>{String(value)}</dd></div>
+              ))}
+          </dl>
+          <button type="button" className="license-delete-button" onClick={(event) => { event.stopPropagation(); onDeleteGeneric(item.id); }}>
+            Eliminar registro
           </button>
         </>
       ) : <p className="text-sm text-gray-600">{item.desc}</p>}
