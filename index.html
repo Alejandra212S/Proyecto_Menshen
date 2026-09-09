@@ -5,9 +5,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sistema de inventario</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="bg-slate-100 text-slate-800">
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+
+    <footer class="bg-slate-800 text-slate-200 py-4 mt-8">
+      <div class="container mx-auto px-4 text-center text-sm">
+        <img src="logo-removebg-preview.png" alt="Logo de Menshen" class="footer-logo" />
+        © 2026 Menshen. Todos los derechos reservados.
+      </div>
+    </footer>
+
+    <script type="text/babel" src="inventory-components.jsx"></script>
+    <script type="text/babel" src="app.jsx"></script>
   </body>
 </html>
