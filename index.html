@@ -5,6 +5,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sistema de inventario</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -13,6 +16,32 @@
   </head>
   <body class="bg-slate-100 text-slate-800">
     <div id="root"></div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+        setDoc,
+        deleteDoc,
+        doc,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyBmr2jNfh21fTJ9v9m9wDFk7RzlvFIfnWQ",
+        authDomain: "mantenimiento-menshen.firebaseapp.com",
+        projectId: "mantenimiento-menshen",
+        storageBucket: "mantenimiento-menshen.firebasestorage.app",
+        messagingSenderId: "345978967513",
+        appId: "1:345978967513:web:c9dba1cf8b2bf89c1e35c8",
+        measurementId: "G-JQD0FNNV6E",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      window.db = getFirestore(app);
+      window.firestoreApi = { collection, getDocs, setDoc, deleteDoc, doc };
+    </script>
 
     <footer class="bg-slate-800 text-slate-200 py-4 mt-8">
       <div class="container mx-auto px-4 text-center text-sm">

@@ -1,4 +1,14 @@
-const { useState } = React;
+const { useState, useEffect } = React;
+
+const db = window.db;
+const firestoreApi = window.firestoreApi || {};
+const {
+  collection: firestoreCollection,
+  getDocs: firestoreGetDocs,
+  setDoc: firestoreSetDoc,
+  deleteDoc: firestoreDeleteDoc,
+  doc: firestoreDoc,
+} = firestoreApi;
 
 const Icon = ({ symbol, className = "" }) => (
   <span className={className} aria-hidden="true">{symbol}</span>
@@ -119,7 +129,7 @@ const inventoryData = {
 
 function InventorySystem() {
   const [activeTab, setActiveTab] = useState('inicio');
-  const [equipmentList, setEquipmentList] = useState(inventoryData.computadoras.content);
+  const [equipmentList, setEquipmentList] = useState([]);
   const [equipmentSearch, setEquipmentSearch] = useState('');
   const [selectedEquipmentId, setSelectedEquipmentId] = useState(null);
   const [showEquipmentForm, setShowEquipmentForm] = useState(false);
@@ -127,7 +137,7 @@ function InventorySystem() {
   const [newEquipmentType, setNewEquipmentType] = useState('PC de escritorio');
   const [newEquipmentArea, setNewEquipmentArea] = useState('');
   const [newEquipmentSpecs, setNewEquipmentSpecs] = useState({});
-  const [softwareList, setSoftwareList] = useState(inventoryData.licencias.content);
+  const [softwareList, setSoftwareList] = useState([]);
   const [softwareSearch, setSoftwareSearch] = useState('');
   const [selectedSoftwareId, setSelectedSoftwareId] = useState(null);
   const [showSoftwareForm, setShowSoftwareForm] = useState(false);
@@ -144,10 +154,66 @@ function InventorySystem() {
     const searchableText = `${item.id} ${item.name} ${item.type} ${item.version} ${item.provider} ${item.area}`.toLowerCase();
     return searchableText.includes(softwareSearch.toLowerCase());
   });
+  const totalEquipment = equipmentList.length;
+  const availableEquipment = equipmentList.filter((item) => item.status === 'Disponible').length;
+  const activeEquipment = equipmentList.filter((item) => item.status === 'En uso' || item.status === 'Operativo').length;
+  const defectiveEquipment = equipmentList.filter((item) => item.status === 'Defectuoso').length;
+  const percentage = (value) => totalEquipment ? Math.round((value / totalEquipment) * 100) : 0;
+  const dashboardMetrics = [
+    { label: 'Equipos activos', value: totalEquipment, tone: 'blue' },
+    { label: 'Con defectos', value: defectiveEquipment, tone: 'amber' },
+    { label: 'En uso', value: activeEquipment, tone: 'green' },
+    { label: 'Disponibles', value: availableEquipment, tone: 'violet' },
+  ];
+  const dashboardBars = [
+    { label: 'Activos', value: percentage(totalEquipment), tone: 'blue' },
+    { label: 'En uso', value: percentage(activeEquipment), tone: 'green' },
+    { label: 'Disponibles', value: percentage(availableEquipment), tone: 'violet' },
+    { label: 'Defectuosos', value: percentage(defectiveEquipment), tone: 'amber' },
+  ];
 
-  const handleAddEquipment = (event) => {
+  useEffect(() => {
+    const cargarDesdeFirebase = async () => {
+      if (!db || !firestoreGetDocs || !firestoreCollection) return;
+
+      try {
+        const equiposSnapshot = await firestoreGetDocs(firestoreCollection(db, 'equipos'));
+        const equipos = equiposSnapshot.docs.map((docSnap) => {
+          const data = docSnap.data();
+          return {
+            id: docSnap.id,
+            ...data,
+            name: data.name || data.nombre || '',
+            type: data.type || data.tipo || '',
+            status: data.status || data.Estado || data.estado || 'Disponible',
+          };
+        });
+        setEquipmentList(equipos);
+
+        const licenciasSnapshot = await firestoreGetDocs(firestoreCollection(db, 'licencias'));
+        const licencias = licenciasSnapshot.docs.map((docSnap) => {
+          const data = docSnap.data();
+          return {
+            id: docSnap.id,
+            ...data,
+            name: data.name || data.nombre || '',
+            type: data.type || data.tipo || '',
+            status: data.status || data.Estado || data.estado || 'Vigente',
+          };
+        });
+        setSoftwareList(licencias);
+      } catch (error) {
+        console.error('Error al conectar Firebase:', error);
+        alert('No se pudo conectar Firebase. Revisa tu configuración.');
+      }
+    };
+
+    cargarDesdeFirebase();
+  }, []);
+
+  const handleAddEquipment = async (event) => {
     event.preventDefault();
-    if (!newEquipmentName.trim()) return;
+    if (!newEquipmentName.trim() || !db || !firestoreSetDoc || !firestoreDoc) return;
 
     const newEquipment = {
       id: `EQ-${String(equipmentList.length + 1).padStart(3, '0')}`,
@@ -155,30 +221,48 @@ function InventorySystem() {
       type: newEquipmentType,
       status: 'Disponible',
       area: newEquipmentArea.trim() || 'Sin asignar',
-      specs: specFields.map((field) => [field, newEquipmentSpecs[field].trim()])
+      specs: specFields.map((field) => [field, (newEquipmentSpecs[field] || '').trim()])
     };
 
-    setEquipmentList((currentEquipment) => [...currentEquipment, newEquipment]);
-    setNewEquipmentName('');
-    setNewEquipmentArea('');
-    setNewEquipmentSpecs({});
-    setShowEquipmentForm(false);
-    setSelectedEquipmentId(newEquipment.id);
+    try {
+      await firestoreSetDoc(firestoreDoc(db, 'equipos', newEquipment.id), {
+        ...newEquipment,
+        fechaRegistro: new Date().toISOString(),
+      });
+
+      setEquipmentList((currentEquipment) => [...currentEquipment, newEquipment]);
+      setNewEquipmentName('');
+      setNewEquipmentArea('');
+      setNewEquipmentSpecs({});
+      setShowEquipmentForm(false);
+      setSelectedEquipmentId(newEquipment.id);
+    } catch (error) {
+      console.error('Error al guardar equipo:', error);
+      const detail = error?.code ? ` (${error.code})` : '';
+      alert(`No se pudo guardar el equipo${detail}. Revisa las reglas de Firestore.`);
+    }
   };
 
-  const handleRetireEquipment = (equipmentId = selectedEquipmentId) => {
-    if (!equipmentId) return;
-    setEquipmentList((currentEquipment) => currentEquipment.filter((item) => item.id !== equipmentId));
-    setSelectedEquipmentId(null);
+  const handleRetireEquipment = async (equipmentId = selectedEquipmentId) => {
+    if (!equipmentId || !db || !firestoreDeleteDoc || !firestoreDoc) return;
+
+    try {
+      await firestoreDeleteDoc(firestoreDoc(db, 'equipos', equipmentId));
+      setEquipmentList((currentEquipment) => currentEquipment.filter((item) => item.id !== equipmentId));
+      setSelectedEquipmentId(null);
+    } catch (error) {
+      console.error('Error al eliminar equipo:', error);
+      alert('No se pudo eliminar el equipo.');
+    }
   };
 
   const handleSoftwareChange = (field, value) => {
     setNewSoftware((currentSoftware) => ({ ...currentSoftware, [field]: value }));
   };
 
-  const handleAddSoftware = (event) => {
+  const handleAddSoftware = async (event) => {
     event.preventDefault();
-    if (!newSoftware.name.trim()) return;
+    if (!newSoftware.name.trim() || !db || !firestoreSetDoc || !firestoreDoc) return;
 
     const software = {
       id: `SW-${String(softwareList.length + 1).padStart(3, '0')}`,
@@ -191,16 +275,34 @@ function InventorySystem() {
       status: newSoftware.expiration && newSoftware.expiration < new Date().toISOString().slice(0, 10) ? 'Vencida' : 'Vigente'
     };
 
-    setSoftwareList((currentSoftware) => [...currentSoftware, software]);
-    setNewSoftware({ name: '', type: 'Suscripción', version: '', provider: '', area: '', expiration: '' });
-    setShowSoftwareForm(false);
-    setSelectedSoftwareId(software.id);
+    try {
+      await firestoreSetDoc(firestoreDoc(db, 'licencias', software.id), {
+        ...software,
+        fechaRegistro: new Date().toISOString(),
+      });
+
+      setSoftwareList((currentSoftware) => [...currentSoftware, software]);
+      setNewSoftware({ name: '', type: 'Suscripción', version: '', provider: '', area: '', expiration: '' });
+      setShowSoftwareForm(false);
+      setSelectedSoftwareId(software.id);
+    } catch (error) {
+      console.error('Error al guardar licencia:', error);
+      const detail = error?.code ? ` (${error.code})` : '';
+      alert(`No se pudo guardar la licencia${detail}. Revisa las reglas de Firestore.`);
+    }
   };
 
-  const handleRetireSoftware = (softwareId = selectedSoftwareId) => {
-    if (!softwareId) return;
-    setSoftwareList((currentSoftware) => currentSoftware.filter((item) => item.id !== softwareId));
-    setSelectedSoftwareId(null);
+  const handleRetireSoftware = async (softwareId = selectedSoftwareId) => {
+    if (!softwareId || !db || !firestoreDeleteDoc || !firestoreDoc) return;
+
+    try {
+      await firestoreDeleteDoc(firestoreDoc(db, 'licencias', softwareId));
+      setSoftwareList((currentSoftware) => currentSoftware.filter((item) => item.id !== softwareId));
+      setSelectedSoftwareId(null);
+    } catch (error) {
+      console.error('Error al eliminar licencia:', error);
+      alert('No se pudo eliminar la licencia.');
+    }
   };
 
   return (
@@ -233,7 +335,7 @@ function InventorySystem() {
                 </div>
 
                 <div className="hero-stats">
-                  {inventoryData.inicio.metrics.map((metric) => (
+                  {dashboardMetrics.map((metric) => (
                     <div key={metric.label} className={`metric-card metric-${metric.tone}`}>
                       <span>{metric.label}</span>
                       <strong>{metric.value}</strong>
@@ -252,7 +354,7 @@ function InventorySystem() {
                     <span className="chart-period">Este mes</span>
                   </div>
                   <div className="bar-chart" aria-label="Gráfico de estado de los equipos">
-                    {[{ label: "Activos", tone: "blue" }, { label: "En uso", tone: "green" }, { label: "Disponibles", tone: "violet" }, { label: "Defectuosos", tone: "amber" }].map((item) => (
+                    {dashboardBars.map((item) => (
                       <div className="bar-item" key={item.label}>
                         <div className="bar-value">{item.value}%</div>
                         <div className="bar-track"><div className={`bar-fill bar-${item.tone}`} style={{ height: `${item.value}%` }} /></div>
@@ -270,7 +372,7 @@ function InventorySystem() {
                     </div>
                   </div>
                   <div className="mix-content">
-                    <div className="donut-chart" aria-label="Distribución del inventario por tipo"><span>0<small>equipos</small></span></div>
+                    <div className="donut-chart" aria-label="Distribución del inventario por tipo"><span>{totalEquipment}<small>equipos</small></span></div>
                     <div className="legend-list">
                       <div><i className="legend-dot dot-blue" />Computadoras <strong>%</strong></div>
                       <div><i className="legend-dot dot-green" />Telefonía <strong>%</strong></div>

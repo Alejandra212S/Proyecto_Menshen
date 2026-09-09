@@ -1451,3 +1451,152 @@ nav button.bg-gray-100::before {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Panel visual final */
+:root {
+  --primary: #1769aa;
+  --primary-dark: #0e4d80;
+  --primary-light: #e8f4fb;
+  --accent: #f1803f;
+  --background: #eef3f6;
+  --surface: #ffffff;
+  --border: #d7e1e8;
+  --text-main: #142536;
+  --text-secondary: #637586;
+  --shadow-sm: 0 4px 14px rgba(20, 37, 54, 0.06);
+  --shadow-md: 0 14px 32px rgba(20, 37, 54, 0.11);
+}
+
+body {
+  font-family: "DM Sans", sans-serif;
+  letter-spacing: 0;
+}
+
+h1, h2, h3, .equipment-action-button, .equipment-form-submit {
+  font-family: "Space Grotesk", "DM Sans", sans-serif;
+}
+
+#root > div {
+  background:
+    linear-gradient(135deg, rgba(23, 105, 170, 0.06), transparent 32%),
+    radial-gradient(circle at 90% 8%, rgba(224, 122, 63, 0.08), transparent 24%),
+    var(--background);
+}
+
+#root > div > header.bg-blue-600 {
+  min-height: 78px;
+  padding: 0 2.5rem;
+  background: linear-gradient(105deg, #132b40 0%, #194d6b 72%, #1769aa 100%) !important;
+  box-shadow: 0 12px 26px rgba(20, 54, 78, 0.2);
+}
+
+#root > div > header.bg-blue-600 h1 {
+  position: relative;
+  padding-left: 1.1rem;
+  color: #f7fbfd;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.16em;
+}
+
+#root > div > header.bg-blue-600 h1::before {
+  position: absolute;
+  left: 0;
+  width: 4px;
+  height: 24px;
+  content: "";
+  background: var(--accent);
+  border-radius: 4px;
+}
+
+main {
+  padding-top: 2.4rem !important;
+}
+
+.page-header h1 {
+  color: #17344b !important;
+  font-size: 1.85rem !important;
+}
+
+.home-hero {
+  background: linear-gradient(120deg, #dcecf4 0%, #edf5f7 56%, #fff7ef 100%);
+  border-color: #cbdde6;
+  box-shadow: 0 18px 38px rgba(30, 65, 87, 0.09);
+}
+
+.home-label {
+  color: #1769aa;
+  background: rgba(23, 105, 170, 0.12);
+}
+
+.hero-copy h2 {
+  max-width: 520px;
+  color: #17344b;
+  font-size: clamp(1.75rem, 3vw, 2.6rem);
+  letter-spacing: -0.03em;
+}
+
+.metric-card {
+  border-color: rgba(135, 164, 178, 0.3);
+  box-shadow: 0 7px 16px rgba(31, 70, 89, 0.06);
+}
+
+.metric-card strong { font-family: "Space Grotesk", sans-serif; }
+
+.chart-card,
+.equipment-actions,
+.feature-card {
+  border-color: #d7e1e8;
+  box-shadow: var(--shadow-sm);
+}
+
+.chart-card:hover,
+.equipment-actions:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.chart-heading h3,
+.feature-card h3,
+.equipment-action-heading h2 {
+  color: #17344b;
+}
+
+.equipment-action-button,
+.equipment-form-submit {
+  background: var(--primary);
+  border-radius: 9px;
+}
+
+nav {
+  border-top: 1px solid rgba(215, 225, 232, 0.85) !important;
+  border-bottom: 0 !important;
+  box-shadow: 0 -6px 24px rgba(20, 37, 54, 0.08) !important;
+}
+
+nav button.bg-gray-100::before {
+  background: var(--accent);
+}
+
+nav button.bg-gray-100 > div {
+  background: var(--primary);
+}
+
+@media (max-width: 768px) {
+  #root > div > header.bg-blue-600 {
+    min-height: 64px;
+    padding: 0 1.2rem;
+  }
+
+  .hero-stats {
+    gap: 0.6rem;
+  }
+
+  .metric-card {
+    min-height: 82px;
+    padding: 0.8rem;
+  }
+
+  .metric-card strong {
+    font-size: 1.45rem;
+  }
+}
