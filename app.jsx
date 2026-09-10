@@ -205,9 +205,10 @@ const genericSectionConfig = {
     fields: [
       { key: 'name', label: 'Nombre del artículo', placeholder: 'Ej. Teclado USB', required: true },
       { key: 'type', label: 'Categoría', type: 'select', options: ['Accesorio', 'Consumible', 'Mobiliario', 'Refacción'] },
-      { key: 'area', label: 'Área', placeholder: 'Ej. Mantenimiento' },
+      { key: 'area', label: 'Área', type: 'select', options: ['Almacén', 'Calidad', 'Comercial', 'Compras', 'Finanzas', 'Mantenimiento', 'Moldes', 'Producción', 'Recursos Humanos', 'Sistemas'] },
       { key: 'quantity', label: 'Cantidad', type: 'number', placeholder: '0' },
       { key: 'status', label: 'Estado', type: 'select', options: ['Disponible', 'Asignado', 'Agotado'] },
+      { key: 'Asignado a', label: 'Asignado a', placeholder: 'Nombre del usuario asignado' },
     ],
   },
   Configuración: {
