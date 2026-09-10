@@ -117,6 +117,16 @@ const inventoryData = {
 
     content: [
     ]
+
+  },
+  Ckecklist: {
+    title: "Ckecklist",
+    desc: "Aqui puedes encontrar información para realizar checklist de los equipos de computo, impresoras y telefonia.",
+    icon: <Mail className="w-4-h-412/" />,
+
+    content: [
+    ]
+    
   },
   Configuración: {
     title: "Configuración",
