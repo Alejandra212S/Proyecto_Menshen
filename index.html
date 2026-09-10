@@ -21,13 +21,12 @@
 
     <script>
       const firebaseConfig = {
-        apiKey: "AIzaSyBmr2jNfh21fTJ9v9m9wDFk7RzlvFIfnWQ",
-        authDomain: "mantenimiento-menshen.firebaseapp.com",
-        projectId: "mantenimiento-menshen",
-        storageBucket: "mantenimiento-menshen.firebasestorage.app",
-        messagingSenderId: "345978967513",
-        appId: "1:345978967513:web:c9dba1cf8b2bf89c1e35c8",
-        measurementId: "G-JQD0FNNV6E",
+        apiKey: "AIzaSyCyOT9-KZaEH9QB8YPK18RL7XlWTyJdBTo",
+        authDomain: "mantenimiento-menshen-e94ce.firebaseapp.com",
+        projectId: "mantenimiento-menshen-e94ce",
+        storageBucket: "mantenimiento-menshen-e94ce.firebasestorage.app",
+        messagingSenderId: "1041705456217",
+        appId: "1:1041705456217:web:41274cd0309be0e3e69748",
       };
 
       firebase.initializeApp(firebaseConfig);
@@ -36,7 +35,10 @@
         collection: (database, path) => database.collection(path),
         getDocs: (reference) => reference.get(),
         getDoc: (reference) => reference.get(),
-        setDoc: (reference, data) => reference.set(data),
+        setDoc: (reference, data, options) => Promise.race([
+          reference.set(data, options),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase no respondió en 10 segundos.')), 10000)),
+        ]),
         deleteDoc: (reference) => reference.delete(),
         doc: (database, collectionName, documentId) => database.collection(collectionName).doc(documentId),
       };
@@ -49,7 +51,7 @@
       </div>
     </footer>
 
-    <script type="text/babel" src="inventory-components.jsx?v=3"></script>
-    <script type="text/babel" src="app.jsx?v=3"></script>
+    <script type="text/babel" src="inventory-components.jsx?v=4"></script>
+    <script type="text/babel" src="app.jsx?v=4"></script>
   </body>
 </html>

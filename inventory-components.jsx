@@ -1,6 +1,6 @@
 /* Componentes visuales de la aplicación. La lógica y el estado permanecen en app.jsx. */
 
-const InventoryCard = ({ item, index, selectedEquipmentId, selectedSoftwareId, onSelectEquipment, onSelectSoftware, onRetireEquipment, onRetireSoftware, onDeleteRecovered, onDeleteGeneric, onPrint }) => {
+const InventoryCard = ({ item, index, selectedEquipmentId, selectedSoftwareId, onSelectEquipment, onSelectSoftware, onRetireEquipment, onRetireSoftware, onDeleteRecovered, onDeleteGeneric, onPrint, onChangeEquipmentStatus, onChangeSoftwareStatus }) => {
   const isEquipment = Boolean(item.specs);
   const isSoftware = item.expiration !== undefined;
   const isRecovered = item.status === 'Recuperado';
@@ -20,7 +20,33 @@ const InventoryCard = ({ item, index, selectedEquipmentId, selectedSoftwareId, o
           <h3 className="font-semibold text-gray-900 mb-1">{item.name}</h3>
           {item.type && <span className="equipment-type">{item.type}</span>}
         </div>
-        {item.status && <span className={`equipment-status status-${item.status.toLowerCase().replace(' ', '-')}`}>{item.status}</span>}
+        {item.status && (isEquipment ? (
+          <select
+            className={`equipment-status equipment-status-select status-${item.status.toLowerCase().replace(' ', '-').replace('ñ', 'n')}`}
+            value={item.status}
+            onClick={(event) => event.stopPropagation()}
+            onChange={(event) => onChangeEquipmentStatus(item.id, event.target.value)}
+            aria-label={`Cambiar estado de ${item.name}`}
+          >
+            <option>Disponible</option>
+            <option>En uso</option>
+            <option>Operativo</option>
+            <option>Dañado</option>
+          </select>
+        ) : isSoftware ? (
+          <select
+            className={`equipment-status equipment-status-select status-${item.status.toLowerCase().replaceAll(' ', '-').replace('ó', 'o')}`}
+            value={item.status}
+            onClick={(event) => event.stopPropagation()}
+            onChange={(event) => onChangeSoftwareStatus(item.id, event.target.value)}
+            aria-label={`Cambiar estado de ${item.name}`}
+          >
+            <option>Vigente</option>
+            <option>Próxima a vencer</option>
+            <option>Vencida</option>
+            <option>Vendida</option>
+          </select>
+        ) : <span className={`equipment-status status-${item.status.toLowerCase().replace(' ', '-')}`}>{item.status}</span>)}
       </div>
       {isEquipment ? (
         <>

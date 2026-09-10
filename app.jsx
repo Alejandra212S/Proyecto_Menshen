@@ -1,4 +1,4 @@
-const { useState, useEffect } = React;
+const { useEffect, useState } = React;
 
 const db = window.db;
 const firestoreApi = window.firestoreApi || {};
@@ -33,14 +33,14 @@ const inventoryData = {
     icon: <Home className="w-4-h-412/" />,
     metrics: [
       { label: "Equipos activos", tone: "gray" },
-      { label: "Con defectos", tone: "gray" },
+      { label: "Dañados", tone: "gray" },
       { label: "En uso", tone: "gray" },
       { label:"Disponibles", tone :"gray"}
     ],
     content: [
-      {  name: "Panel General de Equipos", desc: "Total de equipos:  | Activos:  | Con defectos: " },
+      {  name: "Panel General de Equipos", desc: "Total de equipos:  | Activos:  | Dañados: " },
       {  name: "Telefonia", desc: "Total de equipos:  | En uso: " },
-      {  name: "Tipo de Equipos", desc: "Total de equipos: o | Activos:  | Con defectos: " },
+      {  name: "Tipo de Equipos", desc: "Total de equipos: o | Activos:  | Dañados: " },
       {  name: "Impresoras", desc: "Reporte de toners, cartuchos y mantenimiento" }
     ]
   },
@@ -62,8 +62,8 @@ const inventoryData = {
     ]
   },
   noFuncionales: {
-    title: "Equipos Defectuosos ",
-    desc: "Para agregar un equipo con defectos debes de tomar una foto del equipo y subirla al sistema",
+    title: "Equipos Dañados ",
+    desc: "Para agregar un equipo dañado debes de tomar una foto del equipo y subirla al sistema",
      icon: <Mouse className="w-4-h-412/" />,
     content: [
  
@@ -222,6 +222,7 @@ function InventorySystem() {
   const [newEquipmentType, setNewEquipmentType] = useState('PC de escritorio');
   const [newEquipmentArea, setNewEquipmentArea] = useState('');
   const [newEquipmentSpecs, setNewEquipmentSpecs] = useState({});
+  const [isSavingEquipment, setIsSavingEquipment] = useState(false);
   const [recoveredList, setRecoveredList] = useState([]);
   const [recoveredSearch, setRecoveredSearch] = useState('');
   const [showRecoveredForm, setShowRecoveredForm] = useState(false);
@@ -239,7 +240,7 @@ function InventorySystem() {
   const isHome = activeTab === 'inicio';
   const specFields = newEquipmentType === 'Monitor'
     ? ['Pantalla', 'Resolución', 'Conexiones', 'Asignado a']
-    : ['Procesador', 'Memoria RAM', 'Almacenamiento', 'Sistema'];
+    : ['Procesador', 'Memoria RAM', 'Disco duro o SSD', 'Sistema'];
   const visibleEquipment = equipmentList.filter((item) => {
     const searchableText = `${item.id} ${item.name} ${item.type} ${item.area}`.toLowerCase();
     return searchableText.includes(equipmentSearch.toLowerCase());
@@ -261,11 +262,31 @@ function InventorySystem() {
   const totalEquipment = equipmentList.length;
   const availableEquipment = equipmentList.filter((item) => item.status === 'Disponible').length;
   const activeEquipment = equipmentList.filter((item) => item.status === 'En uso' || item.status === 'Operativo').length;
-  const defectiveEquipment = equipmentList.filter((item) => item.status === 'Defectuoso').length;
+  const defectiveEquipment = equipmentList.filter((item) => ['Dañado', 'Defectuoso'].includes(item.status)).length;
   const percentage = (value) => totalEquipment ? Math.round((value / totalEquipment) * 100) : 0;
+  const typeDistributionBase = [
+    { label: 'Equipo de computo', value: equipmentList.length, color: '#0f766e', className: 'dot-teal' },
+    { label: 'Telefonía', value: (genericLists.Telefonia || []).length, color: '#ea580c', className: 'dot-orange' },
+    { label: 'Impresoras', value: (genericLists.Impresoras || []).length, color: '#c026d3', className: 'dot-fuchsia' },
+  ];
+  const otherInventoryCount = softwareList.length + recoveredList.length + Object.entries(genericLists)
+    .filter(([sectionKey]) => !['Telefonia', 'Impresoras'].includes(sectionKey))
+    .reduce((total, [, records]) => total + records.length, 0);
+  const typeDistribution = [
+    ...typeDistributionBase,
+    { label: 'Otros', value: otherInventoryCount, color: '#475569', className: 'dot-slate' },
+  ];
+  const typeDistributionTotal = typeDistribution.reduce((total, item) => total + item.value, 0);
+  let typeDistributionOffset = 0;
+  const donutStops = typeDistribution.map((item) => {
+    const start = typeDistributionTotal ? (typeDistributionOffset / typeDistributionTotal) * 100 : 0;
+    typeDistributionOffset += item.value;
+    const end = typeDistributionTotal ? (typeDistributionOffset / typeDistributionTotal) * 100 : 0;
+    return `${item.color} ${start}% ${end}%`;
+  }).join(', ');
   const dashboardMetrics = [
     { label: 'Equipos activos', value: totalEquipment, tone: 'blue' },
-    { label: 'Con defectos', value: defectiveEquipment, tone: 'amber' },
+    { label: 'Dañados', value: defectiveEquipment, tone: 'amber' },
     { label: 'En uso', value: activeEquipment, tone: 'green' },
     { label: 'Disponibles', value: availableEquipment, tone: 'violet' },
   ];
@@ -273,8 +294,19 @@ function InventorySystem() {
     { label: 'Activos', value: percentage(totalEquipment), tone: 'blue' },
     { label: 'En uso', value: percentage(activeEquipment), tone: 'green' },
     { label: 'Disponibles', value: percentage(availableEquipment), tone: 'violet' },
-    { label: 'Defectuosos', value: percentage(defectiveEquipment), tone: 'amber' },
+    { label: 'Dañados', value: percentage(defectiveEquipment), tone: 'amber' },
   ];
+  const getLicenseStatus = (expiration, currentStatus = 'Vigente') => {
+    if (!expiration) return currentStatus === 'Vencida' ? 'Vigente' : currentStatus;
+
+    const today = new Date();
+    const expirationDate = new Date(`${expiration}T23:59:59`);
+    const daysUntilExpiration = Math.ceil((expirationDate - today) / 86400000);
+    if (daysUntilExpiration < 0) return 'Vencida';
+    if (currentStatus === 'Próxima a vencer') return 'Próxima a vencer';
+    if (daysUntilExpiration <= 30) return 'Próxima a vencer';
+    return currentStatus === 'Vencida' ? 'Vigente' : currentStatus;
+  };
 
   useEffect(() => {
     const cargarDesdeFirebase = async () => {
@@ -298,12 +330,13 @@ function InventorySystem() {
             specs: data.specs || {
               Procesador: data.Procesador || data.procesador || '',
               'Memoria RAM': data['Memoria RAM'] || data.memoriaRAM || '',
-              Almacenamiento: data.Almacenamiento || data.almacenamiento || '',
+              'Disco Duro': data['DiscoDuro'] || data.discoDuro || '',
               Sistema: data.Sistema || data.sistema || '',
             },
           };
         });
         setEquipmentList(equipos);
+        setFirebaseStatus(`${equipos.length} equipos cargados desde Firebase; cargando el resto...`);
 
         const licenciasSnapshot = await firestoreGetDocs(firestoreCollection(db, 'Licencias'));
         const licencias = licenciasSnapshot.docs.map((docSnap) => {
@@ -313,13 +346,20 @@ function InventorySystem() {
             ...data,
             name: data.name || data.nombre || data.Nombre || '',
             type: data.type || data.tipo || data.Tipo || '',
-            status: data.status || data.Estado || data.estado || 'Vigente',
+            status: getLicenseStatus(data.expiration || data['Fecha de vencimiento'] || data['fecha de vencimiento'] || '', data.status || data.Estado || data.estado || 'Vigente'),
             provider: data.provider || data.Proveedor || data.proveedor || data['asignado a'] || '',
             expiration: data.expiration || data['Fecha de vencimiento'] || data['fecha de vencimiento'] || '',
             area: data.area || data.Área || data['Área asignada'] || '',
           };
         });
         setSoftwareList(licencias);
+        licencias.forEach((license) => {
+          if (license.status === 'Vencida' || license.status === 'Próxima a vencer') {
+            firestoreSetDoc(firestoreDoc(db, 'Licencias', license.id), { status: license.status }, { merge: true }).catch((error) => {
+              console.warn('No se pudo actualizar automáticamente la licencia vencida:', error);
+            });
+          }
+        });
 
         const recuperadosSnapshot = await firestoreGetDocs(firestoreCollection(db, 'recuperados'));
         const recuperados = recuperadosSnapshot.docs.map((docSnap) => {
@@ -375,6 +415,8 @@ function InventorySystem() {
       alert('Firebase no está disponible. Recarga la página con Ctrl + F5.');
       return;
     }
+    setIsSavingEquipment(true);
+    setFirebaseStatus('Guardando equipo en Firebase...');
 
     const newEquipment = {
       id: `EQ-${String(equipmentList.length + 1).padStart(3, '0')}`,
@@ -415,6 +457,8 @@ function InventorySystem() {
       const message = error?.message || 'Error desconocido';
       setFirebaseStatus(`Error al guardar equipo${detail}`);
       alert(`No se pudo guardar el equipo${detail}: ${message}`);
+    } finally {
+      setIsSavingEquipment(false);
     }
   };
 
@@ -428,6 +472,24 @@ function InventorySystem() {
     } catch (error) {
       console.error('Error al eliminar equipo:', error);
       alert('No se pudo eliminar el equipo.');
+    }
+  };
+
+  const handleChangeEquipmentStatus = async (equipmentId, status) => {
+    if (!equipmentId || !db || !firestoreSetDoc || !firestoreDoc) return;
+
+    const previousEquipment = equipmentList.find((item) => item.id === equipmentId);
+    setEquipmentList((currentEquipment) => currentEquipment.map((item) => item.id === equipmentId ? { ...item, status } : item));
+
+    try {
+      await firestoreSetDoc(firestoreDoc(db, 'equipos', equipmentId), { status }, { merge: true });
+      setFirebaseStatus(`Estado de ${equipmentId} actualizado a ${status}`);
+    } catch (error) {
+      setEquipmentList((currentEquipment) => currentEquipment.map((item) => item.id === equipmentId ? previousEquipment : item));
+      console.error('Error al actualizar estado del equipo:', error);
+      const detail = error?.code ? ` (${error.code})` : '';
+      setFirebaseStatus(`Error al actualizar estado${detail}`);
+      alert(`No se pudo actualizar el estado${detail}.`);
     }
   };
 
@@ -608,7 +670,7 @@ function InventorySystem() {
       provider: newSoftware.provider.trim(),
       area: newSoftware.area,
       expiration: newSoftware.expiration,
-      status: newSoftware.expiration && newSoftware.expiration < new Date().toISOString().slice(0, 10) ? 'Vencida' : 'Vigente'
+      status: getLicenseStatus(newSoftware.expiration, 'Vigente')
     };
 
     try {
@@ -640,6 +702,23 @@ function InventorySystem() {
     } catch (error) {
       console.error('Error al eliminar licencia:', error);
       alert('No se pudo eliminar la licencia.');
+    }
+  };
+
+  const handleChangeSoftwareStatus = async (softwareId, status) => {
+    if (!softwareId || !db || !firestoreSetDoc || !firestoreDoc) return;
+
+    const license = softwareList.find((item) => item.id === softwareId);
+    const nextStatus = getLicenseStatus(license?.expiration, status);
+    setSoftwareList((currentSoftware) => currentSoftware.map((item) => item.id === softwareId ? { ...item, status: nextStatus } : item));
+
+    try {
+      await firestoreSetDoc(firestoreDoc(db, 'Licencias', softwareId), { status: nextStatus }, { merge: true });
+      setFirebaseStatus(`Licencia ${softwareId} actualizada a ${nextStatus}`);
+    } catch (error) {
+      setSoftwareList((currentSoftware) => currentSoftware.map((item) => item.id === softwareId ? license : item));
+      console.error('Error al actualizar estado de licencia:', error);
+      alert('No se pudo actualizar el estado de la licencia.');
     }
   };
 
@@ -714,12 +793,17 @@ function InventorySystem() {
                     </div>
                   </div>
                   <div className="mix-content">
-                    <div className="donut-chart" aria-label="Distribución del inventario por tipo"><span>{totalEquipment}<small>equipos</small></span></div>
+                    <div className="donut-chart" style={{ background: typeDistributionTotal ? `conic-gradient(${donutStops})` : '#e2e8f0' }} aria-label="Distribución del inventario por tipo">
+                      <span>{typeDistributionTotal}<small>registros</small></span>
+                    </div>
                     <div className="legend-list">
-                      <div><i className="legend-dot dot-blue" />Computadoras <strong>%</strong></div>
-                      <div><i className="legend-dot dot-green" />Telefonía <strong>%</strong></div>
-                      <div><i className="legend-dot dot-violet" />Impresoras <strong>%</strong></div>
-                      <div><i className="legend-dot dot-amber" />Otros <strong>%</strong></div>
+                      {typeDistribution.map((item) => (
+                        <div key={item.label} title={`${item.label}: ${item.value} ${item.value === 1 ? 'equipo' : 'equipos'}`}>
+                          <i className={`legend-dot ${item.className}`} style={{ backgroundColor: item.color }} />
+                          <span>{item.label}</span>
+                          <strong>{item.value}</strong>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </article>
@@ -828,7 +912,7 @@ function InventorySystem() {
                       </div>
                       <div className="equipment-form-footer">
                         <p>El equipo se registrará inicialmente con estado <strong>Disponible</strong>.</p>
-                        <button type="submit" className="equipment-form-submit"><Plus /> Guardar equipo</button>
+                        <button type="submit" className="equipment-form-submit" disabled={isSavingEquipment}><Plus /> {isSavingEquipment ? 'Guardando...' : 'Guardar equipo'}</button>
                       </div>
                     </form>
                     
@@ -1024,7 +1108,9 @@ function InventorySystem() {
                     onSelectEquipment={setSelectedEquipmentId}
                     onSelectSoftware={setSelectedSoftwareId}
                     onRetireEquipment={handleRetireEquipment}
+                    onChangeEquipmentStatus={handleChangeEquipmentStatus}
                     onRetireSoftware={handleRetireSoftware}
+                    onChangeSoftwareStatus={handleChangeSoftwareStatus}
                     onDeleteRecovered={handleDeleteRecovered}
                     onDeleteGeneric={handleDeleteGeneric}
                     onPrint={handlePrint}
