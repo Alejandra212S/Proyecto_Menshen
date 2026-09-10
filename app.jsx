@@ -126,7 +126,7 @@ const inventoryData = {
 
     content: [
     ]
-    
+
   },
   Configuración: {
     title: "Configuración",
@@ -391,6 +391,7 @@ function InventorySystem() {
             name: data.name || data.nombre || '',
             type: data.type || data.tipo || '',
             condition: data.condition || data.condicion || 'Operativo',
+            
           };
         });
         setRecoveredList(recuperados);

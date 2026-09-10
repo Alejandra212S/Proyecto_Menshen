@@ -1,7 +1,7 @@
 
 :root {
-  --primary: #2563eb;
-  --primary-dark: #1d4ed8;
+  --primary: #000000;
+  --primary-dark: #dfe8ff;
   --primary-light: #eff6ff;
   --success: #16a34a;
   --success-light: #f0fdf4;
@@ -1605,7 +1605,7 @@ button:disabled {
 
 @media (max-width: 768px) {
   .firebase-status {
-    top: 70px;
+    top: 10px;
     right: 0.75rem;
     max-width: calc(100vw - 1.5rem);
   }
@@ -1689,7 +1689,7 @@ nav span {
 
 .firebase-status {
   position: fixed;
-  top: 86px;
+  top: 116px;
   right: 1.25rem;
   z-index: 40;
   display: inline-flex;
