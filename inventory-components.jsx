@@ -1,12 +1,13 @@
 /* Componentes visuales de la aplicación. La lógica y el estado permanecen en app.jsx. */
 
-const InventoryCard = ({ item, index, activeTab, selectedEquipmentId, selectedSoftwareId, onSelectEquipment, onSelectSoftware, onRetireEquipment, onRetireSoftware, onDeleteRecovered, onDeleteGeneric, onPrint, onChangeEquipmentStatus, onChangeSoftwareStatus, onChangeDefectiveStatus }) => {
+const InventoryCard = ({ item, index, activeTab, selectedEquipmentId, selectedSoftwareId, onSelectEquipment, onSelectSoftware, onRetireEquipment, onRetireSoftware, onDeleteRecovered, onDeleteGeneric, onPrint, onChangeEquipmentStatus, onChangeSoftwareStatus, onChangeDefectiveStatus, onChangeAreaStatus }) => {
   const isEquipment = Boolean(item.specs);
   const isSoftware = item.expiration !== undefined;
   const isRecovered = item.status === 'Recuperado';
   const isPrinter = Boolean(item.toner);
   const isGeneric = Boolean(item.id) && !isEquipment && !isSoftware && !isRecovered;
   const isDefective = isGeneric && (activeTab === 'noFuncionales' || item.problem !== undefined);
+  const isAreaEquipment = isGeneric && activeTab === 'porArea';
   const isSelected = selectedEquipmentId === item.id || selectedSoftwareId === item.id;
   const statusControl = item.status && (isEquipment ? (
     <select
@@ -44,6 +45,18 @@ const InventoryCard = ({ item, index, activeTab, selectedEquipmentId, selectedSo
       <option>Activo</option>
       <option>En uso</option>
       <option>Baja</option>
+    </select>
+  ) : isAreaEquipment ? (
+    <select
+      className={`equipment-status equipment-status-select status-${item.status.toLowerCase().replace(' ', '-')}`}
+      value={item.status}
+      onClick={(event) => event.stopPropagation()}
+      onChange={(event) => onChangeAreaStatus(item.id, event.target.value)}
+      aria-label={`Cambiar estado de ${item.name}`}
+    >
+      <option>Disponible</option>
+      <option>En uso</option>
+      <option>Operativo</option>
     </select>
   ) : <span className={`equipment-status status-${item.status.toLowerCase().replace(' ', '-')}`}>{item.status}</span>);
 
@@ -125,6 +138,17 @@ const InventoryCard = ({ item, index, activeTab, selectedEquipmentId, selectedSo
           </button>
           <button type="button" className="license-delete-button" onClick={(event) => { event.stopPropagation(); onDeleteGeneric(item.id); }}>
             Eliminar impresora
+          </button>
+        </>
+      ) : isAreaEquipment ? (
+        <>
+          <div className="equipment-meta"><span>Área</span><strong>{item.area || 'Sin asignar'}</strong></div>
+          <dl className="equipment-specs">
+            <div><dt>Responsable</dt><dd>{item.assignedTo || 'Sin asignar'}</dd></div>
+            <div><dt>Tipo</dt><dd>{item.type || 'Sin especificar'}</dd></div>
+          </dl>
+          <button type="button" className="equipment-delete-button" onClick={(event) => { event.stopPropagation(); onDeleteGeneric(item.id); }}>
+            Eliminar equipo
           </button>
         </>
       ) : isGeneric ? (

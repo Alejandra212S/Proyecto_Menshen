@@ -141,13 +141,14 @@ const genericSectionConfig = {
       { key: 'notes', label: 'Notas', placeholder: 'Observaciones adicionales' },
     ],
   },
+ // Configuración para equipos por área
   porArea: {
     collection: 'equiposPorArea',
     label: 'Equipo por área',
     fields: [
       { key: 'name', label: 'Nombre o modelo', placeholder: 'Ej. Dell OptiPlex', required: true },
       { key: 'type', label: 'Tipo de equipo', type: 'select', options: ['Laptop', 'PC de escritorio', 'Monitor', 'Tablet', 'Impresora'] },
-      { key: 'area', label: 'Área', placeholder: 'Ej. Calidad', required: true },
+      { key: 'area', label: 'Área', type: 'select', options: ['Almacén', 'Calidad', 'Comercial', 'Compras', 'Finanzas', 'Mantenimiento', 'Moldes', 'Producción', 'Recursos Humanos', 'Sistemas'], required: true },
       { key: 'assignedTo', label: 'Responsable', placeholder: 'Nombre del responsable' },
       { key: 'status', label: 'Estado', type: 'select', options: ['Disponible', 'En uso', 'Operativo'] },
     ],
@@ -182,9 +183,18 @@ const genericSectionConfig = {
     collection: 'polizas',
     label: 'Póliza de soporte',
     fields: [
-      { key: 'name', label: 'Servicio o proveedor', placeholder: 'Ej. Soporte Microsoft', required: true },
-      { key: 'type', label: 'Tipo de soporte', type: 'select', options: ['Hardware', 'Software', 'Redes', 'Mantenimiento'] },
+      { key: 'type', label: 'Tipo de soporte', type: 'select', options: ['Comprado', 'En renta'] },
+      { key: 'name', label: 'Nombre del programa', placeholder: 'Ej. Business One', required: true },
+      { key: 'version', label: 'Versión', placeholder: 'Ej. 2026' },
       { key: 'provider', label: 'Proveedor', placeholder: 'Nombre del proveedor' },
+      { key: 'area', label: 'Área', type: 'select', options: ['Almacén', 'Calidad', 'Comercial', 'Compras', 'Finanzas', 'Mantenimiento', 'Moldes', 'Producción', 'Recursos Humanos', 'Sistemas'] },
+      { key: 'installationDate', label: 'Fecha de instalación', type: 'date' },
+      { key: 'assignedTo', label: 'Responsable', placeholder: 'Nombre del responsable' },
+      { key: 'serial', label: 'Serie', placeholder: 'Número de serie' },
+      { key: 'code', label: 'Código', placeholder: 'Código del programa o póliza' },
+      { key: 'licenseCount', label: 'Número de licencias', type: 'number', placeholder: '1' },
+      { key: 'contact', label: 'Contacto', placeholder: 'Nombre del contacto' },
+      { key: 'email', label: 'Email', type: 'email', placeholder: 'contacto@empresa.com' },
       { key: 'expiration', label: 'Fecha de vencimiento', type: 'date' },
       { key: 'status', label: 'Estado', type: 'select', options: ['Vigente', 'Por vencer', 'Vencida'] },
     ],
@@ -388,6 +398,7 @@ function InventorySystem() {
             return {
               id: docSnap.id,
               ...data,
+              impresiones: Number(data.impresiones ?? 0),
               toner: data.toner || {
                 magenta: Number(data.tonerMagenta ?? 0),
                 negro: Number(data.tonerBlack ?? 0),
@@ -583,6 +594,7 @@ function InventorySystem() {
       status: genericForm.status || 'Activo',
     };
     if (activeTab === 'Impresoras') {
+      record.impresiones = 0;
       record.toner = {
         magenta: Math.max(0, Math.min(100, Number(genericForm.tonerMagenta || 0))),
         negro: Math.max(0, Math.min(100, Number(genericForm.tonerBlack || 0))),
@@ -675,6 +687,28 @@ function InventorySystem() {
       }));
       console.error('Error al actualizar estado del equipo dañado:', error);
       alert('No se pudo actualizar el estado del equipo dañado.');
+    }
+  };
+
+  const handleChangeAreaStatus = async (recordId, status) => {
+    if (!recordId || !db || !firestoreSetDoc || !firestoreDoc) return;
+
+    const previousRecord = (genericLists.porArea || []).find((item) => item.id === recordId);
+    setGenericLists((currentLists) => ({
+      ...currentLists,
+      porArea: (currentLists.porArea || []).map((item) => item.id === recordId ? { ...item, status } : item),
+    }));
+
+    try {
+      await firestoreSetDoc(firestoreDoc(db, 'equiposPorArea', recordId), { status }, { merge: true });
+      setFirebaseStatus(`Equipo por área ${recordId} actualizado a ${status}`);
+    } catch (error) {
+      setGenericLists((currentLists) => ({
+        ...currentLists,
+        porArea: (currentLists.porArea || []).map((item) => item.id === recordId ? previousRecord : item),
+      }));
+      console.error('Error al actualizar estado del equipo por área:', error);
+      alert('No se pudo actualizar el estado del equipo por área.');
     }
   };
 
@@ -1141,6 +1175,7 @@ function InventorySystem() {
                     onRetireSoftware={handleRetireSoftware}
                     onChangeSoftwareStatus={handleChangeSoftwareStatus}
                     onChangeDefectiveStatus={handleChangeDefectiveStatus}
+                    onChangeAreaStatus={handleChangeAreaStatus}
                     onDeleteRecovered={handleDeleteRecovered}
                     onDeleteGeneric={handleDeleteGeneric}
                     onPrint={handlePrint}
