@@ -1,12 +1,51 @@
 /* Componentes visuales de la aplicación. La lógica y el estado permanecen en app.jsx. */
 
-const InventoryCard = ({ item, index, selectedEquipmentId, selectedSoftwareId, onSelectEquipment, onSelectSoftware, onRetireEquipment, onRetireSoftware, onDeleteRecovered, onDeleteGeneric, onPrint, onChangeEquipmentStatus, onChangeSoftwareStatus }) => {
+const InventoryCard = ({ item, index, activeTab, selectedEquipmentId, selectedSoftwareId, onSelectEquipment, onSelectSoftware, onRetireEquipment, onRetireSoftware, onDeleteRecovered, onDeleteGeneric, onPrint, onChangeEquipmentStatus, onChangeSoftwareStatus, onChangeDefectiveStatus }) => {
   const isEquipment = Boolean(item.specs);
   const isSoftware = item.expiration !== undefined;
   const isRecovered = item.status === 'Recuperado';
   const isPrinter = Boolean(item.toner);
   const isGeneric = Boolean(item.id) && !isEquipment && !isSoftware && !isRecovered;
+  const isDefective = isGeneric && (activeTab === 'noFuncionales' || item.problem !== undefined);
   const isSelected = selectedEquipmentId === item.id || selectedSoftwareId === item.id;
+  const statusControl = item.status && (isEquipment ? (
+    <select
+      className={`equipment-status equipment-status-select status-${item.status.toLowerCase().replace(' ', '-').replace('ñ', 'n')}`}
+      value={item.status}
+      onClick={(event) => event.stopPropagation()}
+      onChange={(event) => onChangeEquipmentStatus(item.id, event.target.value)}
+      aria-label={`Cambiar estado de ${item.name}`}
+    >
+      <option>Disponible</option>
+      <option>En uso</option>
+      <option>Operativo</option>
+      <option>Dañado</option>
+    </select>
+  ) : isSoftware ? (
+    <select
+      className={`equipment-status equipment-status-select status-${item.status.toLowerCase().replaceAll(' ', '-').replace('ó', 'o')}`}
+      value={item.status}
+      onClick={(event) => event.stopPropagation()}
+      onChange={(event) => onChangeSoftwareStatus(item.id, event.target.value)}
+      aria-label={`Cambiar estado de ${item.name}`}
+    >
+      <option>Vigente</option>
+      <option>Próxima a vencer</option>
+      <option>Vencida</option>
+    </select>
+  ) : isDefective ? (
+    <select
+      className={`equipment-status equipment-status-select status-${item.status.toLowerCase().replace(' ', '-')}`}
+      value={item.status}
+      onClick={(event) => event.stopPropagation()}
+      onChange={(event) => onChangeDefectiveStatus(item.id, event.target.value)}
+      aria-label={`Cambiar estado de ${item.name}`}
+    >
+      <option>Activo</option>
+      <option>En uso</option>
+      <option>Baja</option>
+    </select>
+  ) : <span className={`equipment-status status-${item.status.toLowerCase().replace(' ', '-')}`}>{item.status}</span>);
 
   return (
     <div
@@ -14,39 +53,15 @@ const InventoryCard = ({ item, index, selectedEquipmentId, selectedSoftwareId, o
       onClick={() => isEquipment ? onSelectEquipment(item.id) : isSoftware && onSelectSoftware(item.id)}
       className={`p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow ${isEquipment || isSoftware || isRecovered || isPrinter ? 'equipment-card' : ''} ${isSelected ? 'equipment-card-selected' : ''}`}
     >
-      <div className="text-xs font-semibold text-blue-600 mb-1">{item.id}</div>
+      <div className="equipment-id-row text-xs font-semibold text-blue-600 mb-1">
+        <span>{item.id}</span>
+        {statusControl}
+      </div>
       <div className="equipment-card-heading">
         <div>
           <h3 className="font-semibold text-gray-900 mb-1">{item.name}</h3>
           {item.type && <span className="equipment-type">{item.type}</span>}
         </div>
-        {item.status && (isEquipment ? (
-          <select
-            className={`equipment-status equipment-status-select status-${item.status.toLowerCase().replace(' ', '-').replace('ñ', 'n')}`}
-            value={item.status}
-            onClick={(event) => event.stopPropagation()}
-            onChange={(event) => onChangeEquipmentStatus(item.id, event.target.value)}
-            aria-label={`Cambiar estado de ${item.name}`}
-          >
-            <option>Disponible</option>
-            <option>En uso</option>
-            <option>Operativo</option>
-            <option>Dañado</option>
-          </select>
-        ) : isSoftware ? (
-          <select
-            className={`equipment-status equipment-status-select status-${item.status.toLowerCase().replaceAll(' ', '-').replace('ó', 'o')}`}
-            value={item.status}
-            onClick={(event) => event.stopPropagation()}
-            onChange={(event) => onChangeSoftwareStatus(item.id, event.target.value)}
-            aria-label={`Cambiar estado de ${item.name}`}
-          >
-            <option>Vigente</option>
-            <option>Próxima a vencer</option>
-            <option>Vencida</option>
-            <option>Vendida</option>
-          </select>
-        ) : <span className={`equipment-status status-${item.status.toLowerCase().replace(' ', '-')}`}>{item.status}</span>)}
       </div>
       {isEquipment ? (
         <>

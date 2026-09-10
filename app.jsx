@@ -378,7 +378,13 @@ function InventorySystem() {
           const snapshot = await firestoreGetDocs(firestoreCollection(db, config.collection));
           const records = snapshot.docs.map((docSnap) => {
             const data = docSnap.data();
-            if (sectionKey !== 'Impresoras') return { id: docSnap.id, ...data };
+            if (sectionKey !== 'Impresoras') {
+              return {
+                id: docSnap.id,
+                ...data,
+                ...(sectionKey === 'noFuncionales' ? { status: data.status || 'Activo' } : {}),
+              };
+            }
             return {
               id: docSnap.id,
               ...data,
@@ -647,6 +653,28 @@ function InventorySystem() {
     } catch (error) {
       console.error(`Error al eliminar registro de ${activeTab}:`, error);
       alert('No se pudo eliminar el registro.');
+    }
+  };
+
+  const handleChangeDefectiveStatus = async (recordId, status) => {
+    if (!recordId || !db || !firestoreSetDoc || !firestoreDoc) return;
+
+    const previousRecord = (genericLists.noFuncionales || []).find((item) => item.id === recordId);
+    setGenericLists((currentLists) => ({
+      ...currentLists,
+      noFuncionales: (currentLists.noFuncionales || []).map((item) => item.id === recordId ? { ...item, status } : item),
+    }));
+
+    try {
+      await firestoreSetDoc(firestoreDoc(db, 'defectuosos', recordId), { status }, { merge: true });
+      setFirebaseStatus(`Equipo dañado ${recordId} actualizado a ${status}`);
+    } catch (error) {
+      setGenericLists((currentLists) => ({
+        ...currentLists,
+        noFuncionales: (currentLists.noFuncionales || []).map((item) => item.id === recordId ? previousRecord : item),
+      }));
+      console.error('Error al actualizar estado del equipo dañado:', error);
+      alert('No se pudo actualizar el estado del equipo dañado.');
     }
   };
 
@@ -1051,7 +1079,7 @@ function InventorySystem() {
                 <section className="equipment-actions" aria-label={`Acciones de ${activeGenericConfig.label}`}>
                   <div className="equipment-action-heading">
                     <div>
-                      <span className="chart-kicker">Módulo conectado a Firebase</span>
+                      <span className="chart-kicker">Módulo</span>
                       <h2>{activeGenericConfig.label}</h2>
                     </div>
                     <span className="equipment-count">{visibleGeneric.length} registros</span>
@@ -1103,6 +1131,7 @@ function InventorySystem() {
                     key={item.id || `${item.name}-${index}`}
                     item={item}
                     index={index}
+                    activeTab={activeTab}
                     selectedEquipmentId={selectedEquipmentId}
                     selectedSoftwareId={selectedSoftwareId}
                     onSelectEquipment={setSelectedEquipmentId}
@@ -1111,6 +1140,7 @@ function InventorySystem() {
                     onChangeEquipmentStatus={handleChangeEquipmentStatus}
                     onRetireSoftware={handleRetireSoftware}
                     onChangeSoftwareStatus={handleChangeSoftwareStatus}
+                    onChangeDefectiveStatus={handleChangeDefectiveStatus}
                     onDeleteRecovered={handleDeleteRecovered}
                     onDeleteGeneric={handleDeleteGeneric}
                     onPrint={handlePrint}

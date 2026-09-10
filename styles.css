@@ -880,6 +880,33 @@ main .grid p {
   outline: none;
 }
 
+.equipment-id-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-weight: 800 !important;
+  padding: 0 !important;
+  margin-bottom: 10px !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+}
+
+.equipment-id-row > span {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  border-radius: 6px;
+  background: var(--primary-light);
+  color: var(--primary) !important;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.equipment-id-row .equipment-status {
+  margin-left: auto;
+}
+
 .status-danado {
   color: #b91c1c;
   background: #fee2e2;
@@ -918,6 +945,16 @@ main .grid p {
 .status-vendida {
   color: #475569;
   background: #e2e8f0;
+}
+
+.status-activo {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.status-baja {
+  color: #b91c1c;
+  background: #fee2e2;
 }
 
 .equipment-meta {
