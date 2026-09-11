@@ -15,16 +15,16 @@ const Icon = ({ symbol, className = "" }) => (
   <span className={className} aria-hidden="true">{symbol}</span>
 );
 const Home = (props) => <Icon {...props} symbol="☉" />;
-const Monitor = (props) => <Icon {...props} symbol="➣" />;
-const Mouse = (props) => <Icon {...props} symbol="⋙" />;
-const AlertTriangle = (props) => <Icon {...props} symbol="⋗" />;
-const Grid = (props) => <Icon {...props} symbol="⦾" />;
+const Monitor = (props) => <Icon {...props} symbol="←" />;
+const Mouse = (props) => <Icon {...props} symbol="く" />;
+const AlertTriangle = (props) => <Icon {...props} symbol="▣" />;
+const Grid = (props) => <Icon {...props} symbol="◱" />;
 const RotateCcw = (props) => <Icon {...props} symbol="↻" />;
 const CheckCircle = (props) => <Icon {...props} symbol="✓" />;
-const Mail = (props) => <Icon {...props} symbol="く" />;
+const Mail = (props) => <Icon {...props} symbol="☏" />;
 const Search = (props) => <Icon {...props} symbol="⌕" />;
-const Plus = (props) => <Icon {...props} symbol="＋" />;
-const Archive = (props) => <Icon {...props} symbol="▣" />;
+const Plus = (props) => <Icon {...props} symbol="≡" />;
+const Archive = (props) => <Icon {...props} symbol="⎙" />;
 
 const inventoryData = {
   inicio: {
@@ -32,13 +32,12 @@ const inventoryData = {
     desc: "Bienvenido al sistema de inventario del area de TI. Aqui puedes ver los estados de los equipos de computo, impresoras y telefonia.",
     icon: <Home className="w-4-h-412/" />,
     metrics: [
-      { label: "Equipos activos", tone: "gray" },
       { label: "Dañados", tone: "gray" },
       { label: "En uso", tone: "gray" },
       { label:"Disponibles", tone :"gray"}
     ],
     content: [
-      {  name: "Panel General de Equipos", desc: "Total de equipos:  | Activos:  | Dañados: " },
+      {  name: "Panel General de Equipos", desc: "Total de equipos:  | Activos:  | Dañados:" },
       {  name: "Telefonia", desc: "Total de equipos:  | En uso: " },
       {  name: "Tipo de Equipos", desc: "Total de equipos: o | Activos:  | Dañados: " },
       {  name: "Impresoras", desc: "Reporte de toners, cartuchos y mantenimiento" }
@@ -46,7 +45,7 @@ const inventoryData = {
   },
   computadoras: {
     title: "Equipo de computo",
-    desc: "Consulta el inventario técnico de PCs, laptops, tablets y monitores.",
+    desc: "Consulta de equipo técnico de PCs, laptops, tablets y monitores.",
     icon: <Monitor className="w-4-h-412/" />,
 
     content: [
@@ -89,7 +88,7 @@ const inventoryData = {
   Impresoras: {
     title: "Impresoras y Toners",
     desc: "Gestión de impresoras y consumibles.",
-    icon: <RotateCcw className="w-4-h-412/" />,
+    icon: <Archive className="w-4-h-412/" />,
 
     content: [
     ]
@@ -97,15 +96,15 @@ const inventoryData = {
   Telefonia: {
     title: "Telefonía",
     desc:"Gestión de telefonos y dispositivos de comunicación.",
-    icon: <CheckCircle className="w-4-h-412/" />,
+    icon: <Mail className="w-4-h-412/" />,
    
     content: [
     ]
   },
   Poliza: {
-    title: "Programas y polizas de soporte",
+    title: "Polizas de soporte",
     desc: "Gestión de programas y polizas de soporte.",
-    icon: <Mail className="w-4-h-412/" />,
+    icon: <Grid className="w-4-h-412/" />,
 
     content: [
     ]
@@ -113,7 +112,7 @@ const inventoryData = {
   Articulos: {
     title: "Artículos",
     desc: "Gestión de articlos que se tiene en cada area desginada",
-    icon: <Mail className="w-4-h-412/" />,
+    icon: <Search className="w-4-h-412/" />,
 
     content: [
     ]
@@ -122,7 +121,7 @@ const inventoryData = {
   Ckecklist: {
     title: "Ckecklist",
     desc: "Aqui puedes encontrar información para realizar checklist de los equipos de computo, impresoras y telefonia.",
-    icon: <Mail className="w-4-h-412/" />,
+    icon: <CheckCircle className="w-4-h-412/" />,
 
     content: [
     ]
@@ -131,7 +130,7 @@ const inventoryData = {
   Configuración: {
     title: "Configuración",
     desc: "Configuración del sistema.",
-    icon: <Mail className="w-4-h-412/" />,
+    icon: <Plus  className="w-4-h-412/" />,
 
     content: [
     ]
@@ -997,7 +996,7 @@ function InventorySystem() {
                 <section className="equipment-actions" aria-label="Acciones del inventario de software y licencias">
                   <div className="equipment-action-heading">
                     <div>
-                      <span className="chart-kicker">Inventario de software</span>
+                      <span className="chart-kicker">Inventario de software Licencias </span>
                       <h2>Licencias registradas</h2>
                     </div>
                     <span className="equipment-count">{visibleSoftware.length} licencias</span>
