@@ -224,7 +224,7 @@ const genericSectionConfig = {
     collection: 'configuracion',
     label: 'Configuración del sistema',
     fields: [
-      { key: 'name', label: 'Nombre de la configuración', placeholder: 'Ej. Correo de soporte', required: true },
+      { key: 'name', label: 'Configuración', placeholder: 'Ej. Correo de soporte', required: true },
       { key: 'type', label: 'Tipo', type: 'select', options: ['General', 'Notificaciones', 'Mantenimiento', 'Seguridad'] },
       { key: 'value', label: 'Valor', placeholder: 'Valor de la configuración', required: true },
       { key: 'notes', label: 'Descripción', placeholder: 'Notas de configuración' },
@@ -992,6 +992,8 @@ function InventorySystem() {
                   )}
                 </section>
               )}
+              //parte de las licencias
+              
               {activeTab === 'licencias' && (
                 <section className="equipment-actions" aria-label="Acciones del inventario de software y licencias">
                   <div className="equipment-action-heading">
