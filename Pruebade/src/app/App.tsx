@@ -417,8 +417,8 @@ function DashboardView({ machines, alerts, onSelectMachine }: {
             <AreaChart data={productionTrend} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
               <defs>
                 <linearGradient id="prodGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#FF5C00" stopOpacity={0.2} />
-                  <stop offset="95%" stopColor="#FF5C00" stopOpacity={0} />
+                  <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.2} />
+                  <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -426,7 +426,7 @@ function DashboardView({ machines, alerts, onSelectMachine }: {
               <YAxis tick={{ fill: "#6B7A8D", fontSize: 10, fontFamily: "JetBrains Mono" }} tickLine={false} axisLine={false} />
               <Tooltip content={<CustomTooltip />} />
               <Area type="monotone" dataKey="objetivo" stroke="#1A2338" fill="none" strokeDasharray="4 4" strokeWidth={1.5} dot={false} name="Objetivo" />
-              <Area type="monotone" dataKey="real" stroke="#FF5C00" fill="url(#prodGrad)" strokeWidth={2} dot={false} name="Real" />
+              <Area type="monotone" dataKey="real" stroke="var(--primary)" fill="url(#prodGrad)" strokeWidth={2} dot={false} name="Real" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -567,7 +567,7 @@ function MachineDetailView({ machine, onBack }: { machine: Machine; onBack: () =
               contentStyle={{ background: "#0F1724", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 4, fontSize: 11, fontFamily: "JetBrains Mono", color: "#D8E0EA" }}
               cursor={{ fill: "rgba(255,92,0,0.08)" }}
             />
-            <Bar dataKey="pzs" fill="#FF5C00" radius={[2, 2, 0, 0]} maxBarSize={32} name="Piezas" />
+            <Bar dataKey="pzs" fill="var(--primary)" radius={[2, 2, 0, 0]} maxBarSize={32} name="Piezas" />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -683,7 +683,7 @@ function MachineDetailView({ machine, onBack }: { machine: Machine; onBack: () =
                 <Tooltip
                   contentStyle={{ background: "#0F1724", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 4, fontSize: 11, fontFamily: "JetBrains Mono", color: "#D8E0EA" }}
                 />
-                <Line type="monotone" dataKey="INY01" stroke="#FF5C00" strokeWidth={2} dot={{ fill: "#FF5C00", r: 3 }} name="Inyección #01" />
+                <Line type="monotone" dataKey="INY01" stroke="var(--primary)" strokeWidth={2} dot={{ fill: "var(--primary)", r: 3 }} name="Inyección #01" />
                 <Line type="monotone" dataKey="INY02" stroke="#EF4444" strokeWidth={2} dot={{ fill: "#EF4444", r: 3 }} name="Inyección #02" />
                 <Line type="monotone" dataKey="ENS01" stroke="#22C55E" strokeWidth={2} dot={{ fill: "#22C55E", r: 3 }} name="Ensamble #01" />
                 <Line type="monotone" dataKey="ENL01" stroke="#3B82F6" strokeWidth={2} dot={{ fill: "#3B82F6", r: 3 }} name="Enlainadora #01" />
@@ -1020,6 +1020,60 @@ function AlertsView({ alerts, onAcknowledge }: { alerts: Alert[]; onAcknowledge:
 }
 
 /* ─────────────── Sidebar ─────────────── */
+function SettingsView({ theme, setTheme, accentColor, setAccentColor }: {
+  theme: "dark" | "light";
+  setTheme: (value: "dark" | "light") => void;
+  accentColor: string;
+  setAccentColor: (value: string) => void;
+}) {
+  return (
+    <div className="p-6 space-y-6">
+      <div>
+        <h1 className="text-xl font-bold text-foreground">Configuración</h1>
+        <p className="text-sm text-muted-foreground">Personaliza la apariencia del sistema.</p>
+      </div>
+
+      <section className="max-w-3xl bg-card border border-border rounded p-5 space-y-5">
+        <div>
+          <h2 className="text-sm font-semibold text-foreground">Apariencia</h2>
+          <p className="mt-1 text-xs text-muted-foreground">Selecciona el tema para trabajar.</p>
+          <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Tema de la aplicación">
+            {(["dark", "light"] as const).map(mode => (
+              <button key={mode} type="button" aria-pressed={theme === mode}
+                onClick={() => setTheme(mode)}
+                className={`border rounded px-4 py-2 text-sm transition-colors ${theme === mode ? "border-primary text-primary bg-primary/10" : "border-border text-muted-foreground hover:text-foreground"}`}>
+                {mode === "dark" ? "Oscuro" : "Claro"}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="border-t border-border pt-5">
+          <h2 className="text-sm font-semibold text-foreground">Color del sistema</h2>
+          <p className="mt-1 text-xs text-muted-foreground">Cambia el color de botones, indicadores y gráficas.</p>
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            {ACCENT_COLORS.map(color => (
+              <button key={color.value} type="button" aria-label={`Usar color ${color.name}`}
+                aria-pressed={accentColor.toLowerCase() === color.value.toLowerCase()}
+                onClick={() => setAccentColor(color.value)}
+                className={`size-9 rounded-full border-2 transition-transform hover:scale-105 ${accentColor.toLowerCase() === color.value.toLowerCase() ? "border-foreground ring-2 ring-primary ring-offset-2 ring-offset-card" : "border-transparent"}`}
+                style={{ backgroundColor: color.value }} />
+            ))}
+            <label className="flex items-center gap-2 border border-border rounded px-3 py-2 text-xs text-muted-foreground">
+              Personalizado
+              <input aria-label="Color personalizado" type="color" value={accentColor}
+                onChange={event => setAccentColor(event.target.value)}
+                className="size-6 cursor-pointer border-0 bg-transparent p-0" />
+            </label>
+          </div>
+        </div>
+
+        <p className="border-t border-border pt-4 text-xs text-muted-foreground">Tus preferencias se guardan en este navegador.</p>
+      </section>
+    </div>
+  );
+}
+
 function Sidebar({ view, setView, alertCount }: {
   view: View; setView: (v: View) => void; alertCount: number;
 }) {
@@ -1028,6 +1082,7 @@ function Sidebar({ view, setView, alertCount }: {
     { id: "machines", label: "Maquinaria", Icon: Cpu },
     { id: "reports", label: "Reportes", Icon: BarChart2 },
     { id: "alerts", label: "Alarmas", Icon: Bell },
+    { id: "settings", label: "Configuración", Icon: Settings },
   ];
 
   return (
@@ -1086,6 +1141,11 @@ function Sidebar({ view, setView, alertCount }: {
 /* ─────────────── App ─────────────── */
 export default function App() {
   const [view, setView] = useState<View>("dashboard");
+  const [theme, setTheme] = useState<"dark" | "light">(() => readPreference("mes-theme", "dark") === "light" ? "light" : "dark");
+  const [accentColor, setAccentColor] = useState(() => {
+    const storedColor = readPreference("mes-accent-color", "#FF5C00");
+    return /^#[\da-f]{6}$/i.test(storedColor) ? storedColor : "#FF5C00";
+  });
   const [machines] = useState<Machine[]>(MACHINES);
   const [alerts, setAlerts] = useState<Alert[]>(INITIAL_ALERTS);
   const [selectedMachine, setSelectedMachine] = useState<Machine | null>(null);
@@ -1101,8 +1161,18 @@ export default function App() {
 
   const unackedCount = alerts.filter(a => !a.acknowledged).length;
 
+  useEffect(() => {
+    try {
+      localStorage.setItem("mes-theme", theme);
+      localStorage.setItem("mes-accent-color", accentColor);
+    } catch {
+      // Preferences still apply for the current session when storage is unavailable.
+    }
+  }, [theme, accentColor]);
+
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-background text-foreground" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+    <div className={`flex h-screen w-screen overflow-hidden bg-background text-foreground ${theme === "light" ? "theme-light" : ""}`}
+      style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", "--primary": accentColor, "--accent": accentColor, "--ring": accentColor, "--chart-1": accentColor, "--sidebar-primary": accentColor } as CSSProperties}>
       <Sidebar view={view} setView={setView} alertCount={unackedCount} />
 
       <main className="flex-1 overflow-y-auto">
@@ -1120,6 +1190,9 @@ export default function App() {
         )}
         {view === "alerts" && (
           <AlertsView alerts={alerts} onAcknowledge={handleAcknowledge} />
+        )}
+        {view === "settings" && (
+          <SettingsView theme={theme} setTheme={setTheme} accentColor={accentColor} setAccentColor={setAccentColor} />
         )}
       </main>
     </div>

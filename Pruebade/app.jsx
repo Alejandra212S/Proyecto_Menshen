@@ -992,7 +992,6 @@ function InventorySystem() {
                   )}
                 </section>
               )}
-              //parte de las licencias
               
               {activeTab === 'licencias' && (
                 <section className="equipment-actions" aria-label="Acciones del inventario de software y licencias">

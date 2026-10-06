@@ -78,6 +78,29 @@
   --sidebar-ring: #FF5C00;
 }
 
+.theme-light {
+  --background: #F3F6F8;
+  --foreground: #17212B;
+  --card: #FFFFFF;
+  --card-foreground: #17212B;
+  --popover: #FFFFFF;
+  --popover-foreground: #17212B;
+  --secondary: #E8EDF1;
+  --secondary-foreground: #25313D;
+  --muted: #E8EDF1;
+  --muted-foreground: #65717D;
+  --accent-foreground: #FFFFFF;
+  --border: rgba(23, 33, 43, 0.12);
+  --input: #E8EDF1;
+  --input-background: #FFFFFF;
+  --switch-background: #AEB8C2;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #17212B;
+  --sidebar-accent: #EEF2F5;
+  --sidebar-accent-foreground: #17212B;
+  --sidebar-border: rgba(23, 33, 43, 0.12);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
