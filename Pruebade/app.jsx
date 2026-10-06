@@ -26,6 +26,22 @@ const Search = (props) => <Icon {...props} symbol="⌕" />;
 const Plus = (props) => <Icon {...props} symbol="≡" />;
 const Archive = (props) => <Icon {...props} symbol="⎙" />;
 
+const systemColors = [
+  { name: 'Azul', value: '#2563eb' },
+  { name: 'Verde', value: '#15803d' },
+  { name: 'Naranja', value: '#ea580c' },
+  { name: 'Rojo', value: '#dc2626' },
+  { name: 'Turquesa', value: '#0891b2' },
+];
+
+const readSetting = (key, fallback) => {
+  try {
+    return localStorage.getItem(key) || fallback;
+  } catch {
+    return fallback;
+  }
+};
+
 const inventoryData = {
   inicio: {
     title: "Inicio",
@@ -220,20 +236,15 @@ const genericSectionConfig = {
       { key: 'Asignado a', label: 'Asignado a', placeholder: 'Nombre del usuario asignado' },
     ],
   },
-  Configuración: {
-    collection: 'configuracion',
-    label: 'Configuración del sistema',
-    fields: [
-      { key: 'name', label: 'Configuración', placeholder: 'Ej. Correo de soporte', required: true },
-      { key: 'type', label: 'Tipo', type: 'select', options: ['General', 'Notificaciones', 'Mantenimiento', 'Seguridad'] },
-      { key: 'value', label: 'Valor', placeholder: 'Valor de la configuración', required: true },
-      { key: 'notes', label: 'Descripción', placeholder: 'Notas de configuración' },
-    ],
-  },
 };
 
 function InventorySystem() {
   const [activeTab, setActiveTab] = useState('inicio');
+  const [systemTheme, setSystemTheme] = useState(() => readSetting('inventario-theme', 'light') === 'dark' ? 'dark' : 'light');
+  const [systemAccent, setSystemAccent] = useState(() => {
+    const savedColor = readSetting('inventario-accent', '#2563eb');
+    return /^#[\da-f]{6}$/i.test(savedColor) ? savedColor : '#2563eb';
+  });
   const [equipmentList, setEquipmentList] = useState([]);
   const [equipmentSearch, setEquipmentSearch] = useState('');
   const [selectedEquipmentId, setSelectedEquipmentId] = useState(null);
@@ -258,6 +269,7 @@ function InventorySystem() {
   const [genericForm, setGenericForm] = useState({});
   const [firebaseStatus, setFirebaseStatus] = useState('Conectando con Firebase...');
   const isHome = activeTab === 'inicio';
+  const isSettings = activeTab === 'Configuración';
   const specFields = newEquipmentType === 'Monitor'
     ? ['Pantalla', 'Resolución', 'Conexiones', 'Asignado a']
     : ['Procesador', 'Memoria RAM', 'Disco duro o SSD', 'Sistema'];
@@ -273,7 +285,7 @@ function InventorySystem() {
     const searchableText = `${item.id} ${item.name} ${item.type} ${item.area} ${item.action}`.toLowerCase();
     return searchableText.includes(recoveredSearch.toLowerCase());
   });
-  const activeGenericConfig = genericSectionConfig[activeTab];
+  const activeGenericConfig = isSettings ? null : genericSectionConfig[activeTab];
   const activeGenericList = activeGenericConfig ? (genericLists[activeTab] || []) : [];
   const visibleGeneric = activeGenericList.filter((item) => {
     const searchableText = Object.values(item).join(' ').toLowerCase();
@@ -327,6 +339,15 @@ function InventorySystem() {
     if (daysUntilExpiration <= 30) return 'Próxima a vencer';
     return currentStatus === 'Vencida' ? 'Vigente' : currentStatus;
   };
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('inventario-theme', systemTheme);
+      localStorage.setItem('inventario-accent', systemAccent);
+    } catch {
+      // Los ajustes permanecen activos durante esta sesión aunque el almacenamiento no esté disponible.
+    }
+  }, [systemTheme, systemAccent]);
 
   useEffect(() => {
     const cargarDesdeFirebase = async () => {
@@ -796,8 +817,27 @@ function InventorySystem() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 text-gray-800">
-      <header className="bg-blue-600 px-6 py-4 text-white shadow-md">
+    <div className={`inventory-system flex flex-col h-screen ${systemTheme === 'dark' ? 'inventory-theme-dark bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-800'}`}
+      style={{ '--inventory-accent': systemAccent }}>
+      <style>{`
+        .inventory-system .bg-blue-600,
+        .inventory-system .button-primary,
+        .inventory-system .equipment-form-submit {
+          background-color: var(--inventory-accent) !important;
+          border-color: var(--inventory-accent) !important;
+        }
+        .inventory-system .text-blue-600 { color: var(--inventory-accent) !important; }
+        .inventory-theme-dark [class*="bg-white"],
+        .inventory-theme-dark [class*="bg-gray-"] { background-color: #17212b !important; color: #e5e7eb; }
+        .inventory-theme-dark [class*="text-gray-900"],
+        .inventory-theme-dark [class*="text-gray-800"],
+        .inventory-theme-dark [class*="text-gray-700"] { color: #e5e7eb !important; }
+        .inventory-theme-dark [class*="border-gray-"] { border-color: #374151 !important; }
+        .inventory-theme-dark input,
+        .inventory-theme-dark select,
+        .inventory-theme-dark textarea { background-color: #111827; color: #f3f4f6; border-color: #4b5563; }
+      `}</style>
+      <header className="px-6 py-4 text-white shadow-md" style={{ backgroundColor: systemAccent }}>
         <h1 className="text-2xl font-bold">menshen</h1>
       </header>
       <div className={`firebase-status ${firebaseStatus.startsWith('Error') || firebaseStatus.includes('no está') ? 'firebase-status-error' : ''}`} role="status">
@@ -1119,6 +1159,56 @@ function InventorySystem() {
                       </div>
                     </form>
                   )}
+                </section>
+              )}
+              {isSettings && (
+                <section className="max-w-3xl space-y-5 rounded-lg border border-gray-200 bg-white p-5 shadow-sm" aria-label="Ajustes de apariencia">
+                  <div>
+                    <h2 className="text-lg font-semibold">Apariencia</h2>
+                    <p className="mt-1 text-sm text-gray-600">Personaliza los colores y el tema del sistema.</p>
+                  </div>
+
+                  <div className="border-t border-gray-200 pt-4">
+                    <h3 className="text-sm font-semibold">Tema</h3>
+                    <div className="mt-3 inline-flex gap-2" role="group" aria-label="Tema del sistema">
+                      {[{ value: 'light', label: 'Claro' }, { value: 'dark', label: 'Oscuro' }].map((theme) => (
+                        <button key={theme.value} type="button" aria-pressed={systemTheme === theme.value}
+                          onClick={() => setSystemTheme(theme.value)}
+                          className={`rounded-md border px-4 py-2 text-sm ${systemTheme === theme.value ? 'text-white' : 'border-gray-300'}`}
+                          style={systemTheme === theme.value ? { backgroundColor: systemAccent, borderColor: systemAccent } : {}}>
+                          {theme.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="border-t border-gray-200 pt-4">
+                    <h3 className="text-sm font-semibold">Color del sistema</h3>
+                    <p className="mt-1 text-sm text-gray-600">Se aplicará al encabezado y a las acciones principales.</p>
+                    <div className="mt-3 flex flex-wrap items-center gap-3">
+                      {systemColors.map((color) => (
+                        <button key={color.value} type="button" aria-label={`Usar color ${color.name}`}
+                          aria-pressed={systemAccent.toLowerCase() === color.value.toLowerCase()}
+                          onClick={() => setSystemAccent(color.value)}
+                          className={`size-10 rounded-full border-2 ${systemAccent.toLowerCase() === color.value.toLowerCase() ? 'border-gray-900 ring-2 ring-offset-2' : 'border-transparent'}`}
+                          style={{ backgroundColor: color.value, '--tw-ring-color': color.value }} />
+                      ))}
+                      <label className="flex items-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-sm">
+                        Personalizado
+                        <input aria-label="Color personalizado" type="color" value={systemAccent}
+                          onChange={(event) => setSystemAccent(event.target.value)}
+                          className="h-7 w-8 cursor-pointer border-0 bg-transparent p-0" />
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-gray-200 pt-4">
+                    <button type="button" onClick={() => { setSystemTheme('light'); setSystemAccent('#2563eb'); }}
+                      className="text-sm font-medium text-blue-600 hover:underline">
+                      Restablecer configuración
+                    </button>
+                    <p className="mt-2 text-xs text-gray-500">Tus preferencias se guardan en este navegador.</p>
+                  </div>
                 </section>
               )}
               {activeGenericConfig && (
