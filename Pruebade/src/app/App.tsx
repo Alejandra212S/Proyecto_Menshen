@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, type CSSProperties } from "react";
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area,
@@ -13,7 +13,23 @@ import {
 
 /* ─────────────── Types ─────────────── */
 type MachineStatus = "running" | "stopped" | "alarm" | "maintenance";
-type View = "dashboard" | "machines" | "machine-detail" | "reports" | "alerts";
+type View = "dashboard" | "machines" | "machine-detail" | "reports" | "alerts" | "settings";
+
+const ACCENT_COLORS = [
+  { name: "Naranja", value: "#FF5C00" },
+  { name: "Azul", value: "#2563EB" },
+  { name: "Verde", value: "#16A34A" },
+  { name: "Rojo", value: "#DC2626" },
+  { name: "Turquesa", value: "#0891B2" },
+];
+
+function readPreference(key: string, fallback: string) {
+  try {
+    return localStorage.getItem(key) || fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 interface DI { label: string; state: boolean }
 interface DO_ { label: string; state: boolean }
