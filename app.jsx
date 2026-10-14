@@ -305,7 +305,6 @@ function InventorySystem() {
   });
   const [equipmentList, setEquipmentList] = useState([]);
   const [equipmentSearch, setEquipmentSearch] = useState('');
-  const [selectedEquipmentId, setSelectedEquipmentId] = useState(null);
   const [showEquipmentForm, setShowEquipmentForm] = useState(false);
   const [newEquipmentName, setNewEquipmentName] = useState('');
   const [newEquipmentType, setNewEquipmentType] = useState('PC de escritorio');
@@ -395,15 +394,16 @@ function InventorySystem() {
     { label: 'Dañados', value: percentage(defectiveEquipment), tone: 'amber' },
   ];
   const getLicenseStatus = (expiration, currentStatus = 'Vigente') => {
-    if (!expiration) return currentStatus === 'Vencida' ? 'Vigente' : currentStatus;
+    if (!expiration) return currentStatus;
 
     const today = new Date();
     const expirationDate = new Date(`${expiration}T23:59:59`);
     const daysUntilExpiration = Math.ceil((expirationDate - today) / 86400000);
     if (daysUntilExpiration < 0) return 'Vencida';
+    if (currentStatus === 'Vencida') return 'Vencida';
     if (currentStatus === 'Próxima a vencer') return 'Próxima a vencer';
     if (daysUntilExpiration <= 30) return 'Próxima a vencer';
-    return currentStatus === 'Vencida' ? 'Vigente' : currentStatus;
+    return currentStatus;
   };
 
   useEffect(() => {
@@ -576,7 +576,6 @@ function InventorySystem() {
       setNewEquipmentArea('');
       setNewEquipmentSpecs({});
       setShowEquipmentForm(false);
-      setSelectedEquipmentId(newEquipment.id);
       setFirebaseStatus(`Equipo ${newEquipment.id} guardado en Firestore`);
     } catch (error) {
       console.error('Error al guardar equipo:', error);
@@ -589,13 +588,12 @@ function InventorySystem() {
     }
   };
 
-  const handleRetireEquipment = async (equipmentId = selectedEquipmentId) => {
+  const handleRetireEquipment = async (equipmentId) => {
     if (!equipmentId || !db || !firestoreDeleteDoc || !firestoreDoc) return;
 
     try {
       await firestoreDeleteDoc(firestoreDoc(db, 'equipos', equipmentId));
       setEquipmentList((currentEquipment) => currentEquipment.filter((item) => item.id !== equipmentId));
-      setSelectedEquipmentId(null);
     } catch (error) {
       console.error('Error al eliminar equipo:', error);
       alert('No se pudo eliminar el equipo.');
@@ -1057,10 +1055,6 @@ function InventorySystem() {
             </section>
           ) : (
 
-
-
-
-
             <>
               {activeTab === 'computadoras' && (
                 <section className="equipment-actions" aria-label="Acciones del inventario de equipos">
@@ -1154,9 +1148,7 @@ function InventorySystem() {
                     
                   )}
                 </section>
-              )}
-              //parte de las licencias
-              
+              )}  
               {activeTab === 'licencias' && (
                 <section className="equipment-actions" aria-label="Acciones del inventario de software y licencias">
                   <div className="equipment-action-heading">
@@ -1535,9 +1527,7 @@ function InventorySystem() {
                     item={item}
                     index={index}
                     activeTab={activeTab}
-                    selectedEquipmentId={selectedEquipmentId}
                     selectedSoftwareId={selectedSoftwareId}
-                    onSelectEquipment={setSelectedEquipmentId}
                     onSelectSoftware={setSelectedSoftwareId}
                     onRetireEquipment={handleRetireEquipment}
                     onChangeEquipmentStatus={handleChangeEquipmentStatus}
